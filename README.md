@@ -1,6 +1,12 @@
 # General
-For storing various files and projects.
+*For storing various files and projects.*
 
-Added (4) Java files.
+I'm lazy and bad at organizing my files, so I just put them here like I throw dirty clothes in a corner.
 
-Typing this in TestBranch.
+
+
+
+
+*Best wishes,*
+
+*beep boop*
