@@ -17,7 +17,7 @@ public class Graphical extends JFrame {
         f.setSize(500,500);
         f.setLocationRelativeTo(null);    
         
-        f.setLayout(new GridLayout(3,3,5,5));
+        f.setLayout(new GridLayout(3,3,7,7));
         for (int i=1; i<10; i++) {
             nines[i] = new JButton("Number: " + i);
             f.add(nines[i]);
