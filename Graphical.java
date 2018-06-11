@@ -3,6 +3,8 @@ import java.awt.*;
 import java.io.*;
 import java.util.*;
 
+//test
+
 public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
     private ImageIcon image1;
