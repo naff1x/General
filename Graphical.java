@@ -5,8 +5,6 @@ import java.util.*;
 
 public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
-    private JLabel Jl;
-    private ImageIcon img;
     private JButton Jb;
     JButton[] nines = new JButton[10];
     public void Window() {
@@ -20,15 +18,19 @@ public class Graphical extends JFrame {
 
         Dimension button = new Dimension(120, 100);
         
+        JPanel monsterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 7));
+        monsterPanel.setOpaque(false);
+
         for (int i=0; i<4; i++) {
             Jb = new JButton(new ImageIcon("pikachu.png"));
             Jb.setContentAreaFilled(true);
             Jb.setBorderPainted(false);
             Jb.setFocusPainted(false);
             Jb.setPreferredSize(button);
-            f.add(Jb);
+            monsterPanel.add(Jb);
         }
-        
+        f.add(monsterPanel);
+
         /*
         File imageCheck = new File("pikachu.png");
         if (imageCheck.exists()) {
