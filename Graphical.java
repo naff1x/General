@@ -7,19 +7,23 @@ public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
     private JLabel Jl;
     private ImageIcon img;
+    private JButton Jb;
     JButton[] nines = new JButton[10];
-    public void Window() { // Constructor. Creates window
-        JFrame f = new JFrame("Monster Feeder I");
+    public void Window() {
+        JFrame f = new JFrame("Pokemon Feeder");
         f.setContentPane(new JLabel(new ImageIcon("background1.jpg")));
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(600,500);
         f.setResizable(false);
         f.setLocationRelativeTo(null);
         f.setLayout(new FlowLayout());
-        
+        /*
         img = new ImageIcon(getClass().getResource("pikachu.png"));
         Jl = new JLabel(img);
         f.add(Jl);
+        */
+        Jb = new JButton(new ImageIcon("pikachu.png"));
+        f.add(Jb);
 
         /*
         File imageCheck = new File("pikachu.png");
