@@ -5,9 +5,9 @@ import java.util.*;
 
 public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
-    private ImageIcon image1;
-    private JLabel label1;
-
+    private JPanel panel;
+    private JLabel Jl;
+    private ImageIcon img;
     JButton[] nines = new JButton[10];
     public void Window() { // Constructor. Creates window
         JFrame f = new JFrame("Monster Feeder I");
@@ -15,14 +15,14 @@ public class Graphical extends JFrame {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setResizable(false);
         f.setSize(600,500);
-        f.setLocationRelativeTo(null);    
+        f.setLocationRelativeTo(null);
         
+        /*
         f.setLayout(new GridLayout(2,6,7,7));
         for (int i=1; i<10; i++) {
             nines[i] = new JButton("Number: " + i);
             f.add(nines[i]);
-        }
-
+        */
         f.setVisible(true);
     }
 
