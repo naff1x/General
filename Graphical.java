@@ -17,7 +17,7 @@ public class Graphical extends JFrame {
         f.setLayout(new FlowLayout());
 
         Dimension button = new Dimension(120, 100);
-        
+
         JPanel monsterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 7));
         monsterPanel.setOpaque(false);
 
