@@ -5,7 +5,6 @@ import java.util.*;
 
 public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
-    private JPanel panel;
     private JLabel Jl;
     private ImageIcon img;
     JButton[] nines = new JButton[10];
@@ -13,16 +12,31 @@ public class Graphical extends JFrame {
         JFrame f = new JFrame("Monster Feeder I");
         f.setContentPane(new JLabel(new ImageIcon("background1.jpg")));
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setResizable(false);
         f.setSize(600,500);
+        f.setResizable(false);
         f.setLocationRelativeTo(null);
+        f.setLayout(new FlowLayout());
         
+        img = new ImageIcon(getClass().getResource("pikachu.png"));
+        Jl = new JLabel(img);
+        f.add(Jl);
+
         /*
+        File imageCheck = new File("pikachu.png");
+        if (imageCheck.exists()) {
+            System.out.println("Image file found!");
+        } else {
+            System.out.println("Image file not found!");
+        }
+        */
+
+        /* 
         f.setLayout(new GridLayout(2,6,7,7));
         for (int i=1; i<10; i++) {
             nines[i] = new JButton("Number: " + i);
             f.add(nines[i]);
         */
+
         f.setVisible(true);
     }
 
