@@ -17,14 +17,18 @@ public class Graphical extends JFrame {
         f.setResizable(false);
         f.setLocationRelativeTo(null);
         f.setLayout(new FlowLayout());
-        /*
-        img = new ImageIcon(getClass().getResource("pikachu.png"));
-        Jl = new JLabel(img);
-        f.add(Jl);
-        */
-        Jb = new JButton(new ImageIcon("pikachu.png"));
-        f.add(Jb);
 
+        Dimension button = new Dimension(120, 100);
+        
+        for (int i=0; i<4; i++) {
+            Jb = new JButton(new ImageIcon("pikachu.png"));
+            Jb.setContentAreaFilled(true);
+            Jb.setBorderPainted(false);
+            Jb.setFocusPainted(false);
+            Jb.setPreferredSize(button);
+            f.add(Jb);
+        }
+        
         /*
         File imageCheck = new File("pikachu.png");
         if (imageCheck.exists()) {
@@ -49,3 +53,18 @@ public class Graphical extends JFrame {
         g.Window();
     }
 } // end of Graphical
+
+
+/*
+class PikachuButton {
+    private JButton Jb;
+    
+    public void PikachuButton() {
+        Jb = new JButton(new ImageIcon("pikachu.png"));
+        Jb.setContentAreaFilled(true);
+        Jb.setBorderPainted(false);
+        Jb.setFocusPainted(false);
+        Jb.setPreferredSize(button);
+    }
+}
+*/
