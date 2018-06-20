@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
-    private JButton Jb;
-    JButton[] nines = new JButton[10];
+    private JButton[] buttons = new JButton[4];
+    private JButton Jb1;
     public void Window() {
         JFrame f = new JFrame("Pokemon Feeder");
         f.setContentPane(new JLabel(new ImageIcon("background1.jpg")));
@@ -15,12 +15,33 @@ public class Graphical extends JFrame {
         f.setResizable(false);
         f.setLocationRelativeTo(null);
         f.setLayout(new FlowLayout());
-
+        
         Dimension button = new Dimension(120, 100);
 
-        JPanel monsterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 7));
+        JPanel monsterPanel = new JPanel(new FlowLayout());
         monsterPanel.setOpaque(false);
+        monsterPanel.setLocation(0, 100);
 
+        for (int i=0; i<4; i++) {
+            buttons[i] = new JButton(new ImageIcon("pikachu.png"));
+            buttons[i].setContentAreaFilled(true);
+            buttons[i].setBorderPainted(false);
+            buttons[i].setFocusPainted(false);
+            buttons[i].setPreferredSize(button);
+            monsterPanel.add(buttons[i]); 
+        }
+        /*
+        Jb1 = new JButton(new ImageIcon("pikachu.png"));
+        Jb1.setContentAreaFilled(true);
+        Jb1.setBorderPainted(false);
+        Jb1.setFocusPainted(false);
+        Jb1.setPreferredSize(button);
+        monsterPanel.add(Jb1);
+        */
+        f.add(monsterPanel);
+        
+        /*
+        JPanel monsterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 7, 7));
         for (int i=0; i<4; i++) {
             Jb = new JButton(new ImageIcon("pikachu.png"));
             Jb.setContentAreaFilled(true);
@@ -30,6 +51,7 @@ public class Graphical extends JFrame {
             monsterPanel.add(Jb);
         }
         f.add(monsterPanel);
+        */
 
         /*
         File imageCheck = new File("pikachu.png");
@@ -47,6 +69,7 @@ public class Graphical extends JFrame {
             f.add(nines[i]);
         */
 
+        f.pack();
         f.setVisible(true);
     }
 
