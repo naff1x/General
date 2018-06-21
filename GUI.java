@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 
     import java.awt.FlowLayout;
@@ -11,7 +12,9 @@ import java.awt.Dimension;
     import javax.swing.JFrame;
     import javax.swing.JLabel;
     import javax.swing.JPanel;
-    import java.io.*;
+import javax.swing.SwingConstants;
+
+import java.io.*;
 
 
 
@@ -24,6 +27,7 @@ public class GUI extends JFrame implements ActionListener{
     private JButton button;
     private JLabel label;
     private JButton[] buttons = new JButton[4];
+    private JLabel[] cookieCounter = new JLabel[4];
     private JButton scoreButton;
     private int score = 0;
     private JButton restartButton;
@@ -91,7 +95,7 @@ public class GUI extends JFrame implements ActionListener{
         scoreButton.addActionListener(this);
 
         add(scoreButton);
-    }
+    } // end of method "addScore"
 
     public void addRestart() { // Adds restart button to frame
         restartButton = new JButton("Restart");
@@ -101,7 +105,25 @@ public class GUI extends JFrame implements ActionListener{
         restartButton.setFocusPainted(false);
         restartButton.setBounds(464, 411, 120, 50);
         add(restartButton);
-    }
+    } // end of method "addRestart"
+
+    public void addCookieCounters() { // Adds boxes for displaying number of cookies each entity has
+        for (int i=0; i<4; i++) {
+            cookieCounter[i] = new JLabel("?", SwingConstants.CENTER);
+            cookieCounter[i].setFont(standardFont);
+            cookieCounter[i].setOpaque(true);
+            cookieCounter[i].setBackground(new Color(217, 229, 242));
+        }
+        
+        cookieCounter[0].setBounds(49, 120, 44, 44);
+        cookieCounter[1].setBounds(203, 120, 44, 44);
+        cookieCounter[2].setBounds(358, 120, 44, 44);
+        cookieCounter[3].setBounds(506, 120, 44, 44);
+
+        for (int i=0; i<4; i++) {
+            add(cookieCounter[i]);
+        }
+    } // end of method "addCookieCounters"
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
@@ -116,6 +138,7 @@ public class GUI extends JFrame implements ActionListener{
         GUI mainGUI = new GUI("The GUI");
         // mainGUI.addComp();
         mainGUI.addPikachu();
+        mainGUI.addCookieCounters();
         mainGUI.addScore();
         mainGUI.addRestart();
         mainGUI.setLocationRelativeTo(null);
