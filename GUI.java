@@ -32,6 +32,7 @@ public class GUI extends JFrame implements ActionListener{
     private int score = 0;
     private JButton restartButton;
     private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 20);
+    private JLabel textBox;
 
     public GUI(String name) {
         setTitle(name);
@@ -125,6 +126,17 @@ public class GUI extends JFrame implements ActionListener{
         }
     } // end of method "addCookieCounters"
 
+    public void addTextBox() { // Adds middle text box to frame
+        textBox = new JLabel("?", SwingConstants.CENTER);
+        textBox.setFont(standardFont);
+        textBox.setOpaque(true);
+        textBox.setBackground(new Color(217, 229, 242));
+
+        textBox.setBounds(220, 213, 154, 62);
+
+        add(textBox);
+    } // end of method "addTextBox"
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == button) {
             label.setText("hello");
@@ -139,6 +151,7 @@ public class GUI extends JFrame implements ActionListener{
         // mainGUI.addComp();
         mainGUI.addPikachu();
         mainGUI.addCookieCounters();
+        mainGUI.addTextBox();
         mainGUI.addScore();
         mainGUI.addRestart();
         mainGUI.setLocationRelativeTo(null);
