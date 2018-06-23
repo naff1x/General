@@ -1,32 +1,44 @@
 import java.io.*;
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import javax.swing.*;
-import java.awt.*;
+
+    import java.util.*;
+    import java.util.concurrent.ThreadLocalRandom;
+    import java.awt.Color;
+    import java.awt.Dimension;
+    import java.awt.FlowLayout;
+    import java.awt.Font;
+    import java.awt.Insets;
+    import java.awt.event.ActionEvent;
+    import java.awt.event.ActionListener;
+    import java.util.EventObject;
+    import javax.swing.ImageIcon;
+    import javax.swing.JButton;
+    import javax.swing.JFrame;
+    import javax.swing.JLabel;
+    import javax.swing.JPanel;
+    import javax.swing.SwingConstants;
 
 public class MFGrafik {
+
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     static String newLine = System.lineSeparator();
     static ArrayList<Monster> monsterVector = new ArrayList<Monster>();
     public static void main(String[] args) throws IOException, InterruptedException{
-        MFGrafik mfg = new MFGrafik();
-        mfg.init();
         output.println("Welcome to Monster Feeder!" + newLine);
-        int antal = 5;
-
-        for (int i=0; i<antal; i++) { // creates and adds Monster-instances to monsterVector
+        output.print("Enter number of monsters to create: ");
+        int svar = Integer.parseInt(input.readLine());
+        init();
+        for (int i=0; i<svar; i++) { // creates and adds Monster-instances to monsterVector
             Monster a = new Monster();
             monsterVector.add(a);
             output.print("yum...");
         }
         output.println(newLine);
-        mfg.gameLoop();
+        gameLoop();
     }
     
 
-    public void init() throws InterruptedException{
-        window();
+    public static void init() throws InterruptedException{
         output.print(newLine + "Game starting");
         Thread.sleep(400);
         System.out.print(".");
@@ -37,17 +49,7 @@ public class MFGrafik {
         Thread.sleep(400);
     } // end of init
 
-    public void window() {
-        JFrame f = new JFrame();
-        f.setBackground(Color.black);
-        f.setSize(600,500);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setLocationRelativeTo(null);
-        f.setResizable(false);
-        f.setVisible(true);
-    }
-
-    public void gameLoop() throws IOException {
+    public static void gameLoop() throws IOException {
         int roundCount = 0;
         while (monsterVector.size() > 1) {  
             
@@ -65,7 +67,7 @@ public class MFGrafik {
         output.println("Thanks for playing!");
     } // end of gameLoop    
 
-    public void feed() throws IOException {
+    public static void feed() throws IOException {
         int food = ThreadLocalRandom.current().nextInt(0, 2 + 1);
             if (food == 0) {
                 output.print("No cookies to give!");
@@ -78,7 +80,7 @@ public class MFGrafik {
             output.print(newLine);
     } // end of feed    
     
-    public void eat() {
+    public static void eat() {
         for (int i=0; i<monsterVector.size(); i++) {
             monsterVector.get(i).decrease();
 
@@ -91,7 +93,7 @@ public class MFGrafik {
             
         }
     } // end of eat
-} // end of MFGrafik's class
+} // end of MonsterFeeder's class
 
 class Monster {
 
