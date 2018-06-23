@@ -6,7 +6,7 @@ import java.util.*;
 public class Graphical extends JFrame {
     private static final long serialVersionUID = 1L;
     private JButton[] buttons = new JButton[4];
-    private JButton Jb1;
+    //private JButton Jb1;
     public void Window() {
         JFrame f = new JFrame("Pokemon Feeder");
         f.setContentPane(new JLabel(new ImageIcon("background1.jpg")));

@@ -1,6 +1,7 @@
-import java.awt.Color;
-import java.awt.Dimension;
+import java.io.*;
 
+    import java.awt.Color;
+    import java.awt.Dimension;
     import java.awt.FlowLayout;
     import java.awt.Font;
     import java.awt.Insets;
@@ -12,16 +13,12 @@ import java.awt.Dimension;
     import javax.swing.JFrame;
     import javax.swing.JLabel;
     import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-
-import java.io.*;
-
+    import javax.swing.SwingConstants;
 
 
 public class GUI extends JFrame implements ActionListener{
 
     private static final long serialVersionUID = 1L;
-
     static PrintStream output = System.out;
     
     private JButton button;
@@ -127,12 +124,12 @@ public class GUI extends JFrame implements ActionListener{
     } // end of method "addCookieCounters"
 
     public void addTextBox() { // Adds middle text box to frame
-        textBox = new JLabel("?", SwingConstants.CENTER);
+        textBox = new JLabel("You can give: " + "2 cookies", SwingConstants.CENTER);
         textBox.setFont(standardFont);
         textBox.setOpaque(true);
         textBox.setBackground(new Color(217, 229, 242));
 
-        textBox.setBounds(220, 213, 154, 62);
+        textBox.setBounds(204, 213, 185, 65);
 
         add(textBox);
     } // end of method "addTextBox"
