@@ -46,7 +46,6 @@ public class MFGrafik extends JFrame implements ActionListener {
         setSize(600,500);
         setLocationRelativeTo(null);
         setVisible(true);
-        
     } // end of constructor "MFGrafik"
 
     public void addPikachu() { // Adds pikachu-buttons to frame
@@ -88,6 +87,8 @@ public class MFGrafik extends JFrame implements ActionListener {
         restartButton.setBorderPainted(false);
         restartButton.setFocusPainted(false);
         restartButton.setBounds(464, 411, 120, 50);
+        
+        restartButton.addActionListener(this);
         add(restartButton);
     } // end of method "addRestart"
 
@@ -121,12 +122,14 @@ public class MFGrafik extends JFrame implements ActionListener {
     } // end of method "addTextBox"
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == button) {
-            label.setText("hello");
+        if (e.getSource() == restartButton) {
+            // dispose();
+            // System.exit(0);
+            
         } else if (e.getSource() == scoreButton) {
             score++;
             scoreButton.setText("Score: " + score);
-        }
+        } 
     } // end of method "actionPerformed"
 
     public void initalization() throws InterruptedException{
@@ -160,13 +163,17 @@ public class MFGrafik extends JFrame implements ActionListener {
         output.println(newLine);
     } // end of method "initalization"
 
-    public void gameLoop() throws IOException {
+    public void gameLoop() throws IOException, InterruptedException{
         int roundCount = 0;
         while (monsterVector.size() > 1) {  
             
-            output.println("Number of cookies each monster has:");
+            output.println("Number of cookies each monster has:"); // for console
             for (int i=0; i<monsterVector.size(); i++) {
                 output.print("Monster " + (i+1) + ": " + monsterVector.get(i).cookieCount() + "     ");
+            }
+
+            for (int i=0; i<monsterVector.size(); i++) { // for graphical components (cookieCounters)
+                cookieCounter[i].setText("" + monsterVector.get(i).cookieCount());
             }
             output.print(newLine);
             feed();
@@ -175,7 +182,12 @@ public class MFGrafik extends JFrame implements ActionListener {
             roundCount++;
         }
         output.println("Number of rounds played: " + roundCount);
+        textBox.setText("Number of rounds played: " + roundCount);
+        Thread.sleep(waitTime);
         output.println("Thanks for playing!");
+        textBox.setText("<html>Number of rounds played: " + roundCount + "<br/> Thanks for playing!</html>");
+        // Thread.sleep(2000);
+        // System.exit(0);
     } // end of gameLoop    
 
     public void feed() throws IOException {
