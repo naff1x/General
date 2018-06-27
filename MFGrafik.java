@@ -28,9 +28,9 @@ public class MFGrafik extends JFrame implements ActionListener {
     private JButton scoreButton;
     private int score = 0;
     private JButton restartButton;
-    private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 20);
+    private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 16);
     private JLabel textBox;
-    private JPanel mainPanel;
+    private int waitTime = 500;
 
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
@@ -115,7 +115,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         textBox.setOpaque(true);
         textBox.setBackground(new Color(217, 229, 242));
 
-        textBox.setBounds(204, 213, 185, 65);
+        textBox.setBounds(163, 213, 275, 65);
 
         add(textBox);
     } // end of method "addTextBox"
@@ -131,6 +131,8 @@ public class MFGrafik extends JFrame implements ActionListener {
 
     public void initalization() throws InterruptedException{
         output.println("Welcome to Monster Feeder!" + newLine);
+        textBox.setText("Welcome to Pokemon Feeder!");
+        Thread.sleep(2000);
         Monster aMonster = new Monster();
         Monster bMonster = new Monster();
         Monster cMonster = new Monster();
@@ -144,13 +146,17 @@ public class MFGrafik extends JFrame implements ActionListener {
         }
 
         output.print(newLine + "Game starting");
-        Thread.sleep(400);
+        textBox.setText("Game starting");
+        Thread.sleep(waitTime);
         System.out.print(".");
-        Thread.sleep(400);
+        textBox.setText("Game starting.");
+        Thread.sleep(waitTime);
         System.out.print(".");
-        Thread.sleep(400);
+        textBox.setText("Game starting..");
+        Thread.sleep(waitTime);
         System.out.println("." + newLine);
-        Thread.sleep(400);
+        textBox.setText("Game starting...");
+        Thread.sleep(waitTime);
         output.println(newLine);
     } // end of method "initalization"
 
@@ -201,14 +207,15 @@ public class MFGrafik extends JFrame implements ActionListener {
 
     public static void main(String[] args) throws IOException, InterruptedException{
         MFGrafik game = new MFGrafik("Pokemon Feeder");
-        game.addPikachu();
-        game.addCookieCounters();
         game.addTextBox();
-        game.addScore();
-        game.addRestart();
         game.setLocationRelativeTo(null);
         game.repaint();
         game.initalization();
+        game.addPikachu();
+        game.addCookieCounters();
+        game.addScore();
+        game.addRestart();
+        game.repaint();
         game.gameLoop();
     }
 
