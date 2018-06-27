@@ -18,24 +18,119 @@ import java.io.*;
     import javax.swing.SwingConstants;
 
 
-public class MFGrafik {
+public class MFGrafik extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
+
+    private JButton button;
+    private JLabel label;
+    private JButton[] buttons = new JButton[4];
+    private JLabel[] cookieCounter = new JLabel[4];
+    private JButton scoreButton;
+    private int score = 0;
+    private JButton restartButton;
+    private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 20);
+    private JLabel textBox;
+    private JPanel mainPanel;
 
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     private String newLine = System.lineSeparator();
     private ArrayList<Monster> monsterVector = new ArrayList<Monster>();
 
-    public static void main(String[] args) throws IOException, InterruptedException{
-        MFGrafik game = new MFGrafik();
-        game.init();
-        game.gameLoop();
-    }
-    
+    public MFGrafik(String name) throws InterruptedException{
+        setTitle(name);
+        setResizable(false);
+        setContentPane(new JLabel(new ImageIcon("background1.jpg")));
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600,500);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        
+    } // end of constructor "MFGrafik"
 
-    public void init() throws InterruptedException{
+    public void addPikachu() { // Adds pikachu-buttons to frame
+
+        for (int i=0; i<4; i++) {
+            buttons[i] = new JButton(new ImageIcon("pikachu.png"));
+            buttons[i].setContentAreaFilled(true);
+            buttons[i].setBorderPainted(false);
+            buttons[i].setFocusPainted(false);
+        }
+
+        buttons[0].setBounds(10, 10, 120, 100);
+        buttons[1].setBounds(163, 10, 120, 100);
+        buttons[2].setBounds(316, 10, 120, 100);
+        buttons[3].setBounds(464, 10, 120, 100);
+
+        for (int i=0; i<4; i++) {
+            add(buttons[i]); 
+        }
+    } // end of method "addPikachu"
+
+    public void addScore() { // Adds score button to frame
+        scoreButton = new JButton("Score: " + score);
+        scoreButton.setFont(standardFont);
+        scoreButton.setContentAreaFilled(true);
+        scoreButton.setBorderPainted(false);
+        scoreButton.setFocusPainted(false);
+        scoreButton.setBounds(10, 411, 120, 50);
+
+        scoreButton.addActionListener(this);
+
+        add(scoreButton);
+    } // end of method "addScore"
+
+    public void addRestart() { // Adds restart button to frame
+        restartButton = new JButton("Restart");
+        restartButton.setFont(standardFont);
+        restartButton.setContentAreaFilled(true);
+        restartButton.setBorderPainted(false);
+        restartButton.setFocusPainted(false);
+        restartButton.setBounds(464, 411, 120, 50);
+        add(restartButton);
+    } // end of method "addRestart"
+
+    public void addCookieCounters() { // Adds boxes for displaying number of cookies each entity has
+        for (int i=0; i<4; i++) {
+            cookieCounter[i] = new JLabel("?", SwingConstants.CENTER);
+            cookieCounter[i].setFont(standardFont);
+            cookieCounter[i].setOpaque(true);
+            cookieCounter[i].setBackground(new Color(217, 229, 242));
+        }
+        
+        cookieCounter[0].setBounds(49, 120, 44, 44);
+        cookieCounter[1].setBounds(203, 120, 44, 44);
+        cookieCounter[2].setBounds(358, 120, 44, 44);
+        cookieCounter[3].setBounds(506, 120, 44, 44);
+
+        for (int i=0; i<4; i++) {
+            add(cookieCounter[i]);
+        }
+    } // end of method "addCookieCounters"
+
+    public void addTextBox() { // Adds middle text box to frame
+        textBox = new JLabel("You can give: " + "2 cookies", SwingConstants.CENTER);
+        textBox.setFont(standardFont);
+        textBox.setOpaque(true);
+        textBox.setBackground(new Color(217, 229, 242));
+
+        textBox.setBounds(204, 213, 185, 65);
+
+        add(textBox);
+    } // end of method "addTextBox"
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == button) {
+            label.setText("hello");
+        } else if (e.getSource() == scoreButton) {
+            score++;
+            scoreButton.setText("Score: " + score);
+        }
+    } // end of method "actionPerformed"
+
+    public void initalization() throws InterruptedException{
         output.println("Welcome to Monster Feeder!" + newLine);
-
         Monster aMonster = new Monster();
         Monster bMonster = new Monster();
         Monster cMonster = new Monster();
@@ -57,7 +152,7 @@ public class MFGrafik {
         System.out.println("." + newLine);
         Thread.sleep(400);
         output.println(newLine);
-    } // end of init
+    } // end of method "initalization"
 
     public void gameLoop() throws IOException {
         int roundCount = 0;
@@ -103,6 +198,20 @@ public class MFGrafik {
             
         }
     } // end of eat
+
+    public static void main(String[] args) throws IOException, InterruptedException{
+        MFGrafik game = new MFGrafik("Pokemon Feeder");
+        game.addPikachu();
+        game.addCookieCounters();
+        game.addTextBox();
+        game.addScore();
+        game.addRestart();
+        game.setLocationRelativeTo(null);
+        game.repaint();
+        game.initalization();
+        game.gameLoop();
+    }
+
 } // end of MonsterFeeder's class
 
 class Monster {
