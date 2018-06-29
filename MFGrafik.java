@@ -1,6 +1,5 @@
 import java.io.*;
-
-    import java.util.*;
+import java.util.*;
     import java.util.concurrent.ThreadLocalRandom;
     import java.awt.Color;
     import java.awt.Dimension;
@@ -16,9 +15,6 @@ import java.io.*;
     import javax.swing.JLabel;
     import javax.swing.JPanel;
     import javax.swing.SwingConstants;
-
-import jdk.nashorn.internal.ir.TryNode;
-
 
 public class MFGrafik extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
@@ -133,7 +129,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         add(textBox);
     } // end of method "addTextBox"
 
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) { // handles events
         if (e.getSource() == restartButton) {
             
             monsterVector.clear();
@@ -179,7 +175,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         }
     } // end of method "actionPerformed"
 
-    public void initalization() {
+    public void initalization() { // creates monster1-4 and adds them to monsterVector
         monster1 = new Monster();
         monster2 = new Monster();
         monster3 = new Monster();
@@ -198,15 +194,19 @@ public class MFGrafik extends JFrame implements ActionListener {
     } // end of method "initalization"
 
     public void gameLoop() throws InterruptedException {
-        if (monsterVector.size() > 1) {
+        if (numberAlive > 1) {
             
             output.println("Number of cookies each monster has:"); // for console
             for (int i=0; i<monsterVector.size(); i++) {
-                output.print("Monster " + (i+1) + ": " + monsterVector.get(i).cookieCount() + "     ");
+                if (monsterVector.get(i).isAlive()) {
+                    output.print("Monster " + (i+1) + ": " + monsterVector.get(i).cookieCount() + "     ");
+                }
             }
 
             for (int i=0; i<monsterVector.size(); i++) { // for graphical components (cookieCounters)
-                cookieCounter[i].setText("" + monsterVector.get(i).cookieCount());
+                if (monsterVector.get(i).isAlive()) {
+                    cookieCounter[i].setText("" + monsterVector.get(i).cookieCount());
+                }
             }
             output.print(newLine);
             feed();
@@ -227,7 +227,7 @@ public class MFGrafik extends JFrame implements ActionListener {
             if (food == 0) {
                 output.print("No cookies to give!");
                 textBox.setText("No cookies to give!");
-                Thread.sleep(waitTime);
+                Thread.sleep(2000);
                 eat();
             } else {
                 output.print("Cookies you can give: " + food + ". ");
@@ -242,12 +242,14 @@ public class MFGrafik extends JFrame implements ActionListener {
         for (int i=0; i<monsterVector.size(); i++) {
             monsterVector.get(i).decrease();
 
-            if (!monsterVector.get(i).isAlive()) { // if monster dies...
-                monsterVector.remove(monsterVector.get(i));
+            if (!monsterVector.get(i).isAlive() & buttons[i].getIcon() != fainted) { // if monster dies and isn't already fainted
+                //monsterVector.remove(monsterVector.get(i));            
+                numberAlive--;
                 fainted = new ImageIcon("fainted_pikachu2.png");
                 buttons[i].setIcon(fainted);
                 buttons[i].removeActionListener(this);
                 cookieCounter[i].setVisible(false);
+
                 output.print("aargh!...");
             } else {
                 output.print("yum...");
