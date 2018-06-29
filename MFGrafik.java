@@ -31,7 +31,16 @@ public class MFGrafik extends JFrame implements ActionListener {
     private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 16);
     private JLabel textBox;
     private int waitTime = 500;
+    private Monster monster1;
+    private Monster monster2;
+    private Monster monster3;
+    private Monster monster4;
     private ArrayList<Monster> monsterVector = new ArrayList<Monster>();
+    private int food;
+    private int roundCount = -1;
+    private int svar;
+    private ImageIcon fainted;
+    private int numberAlive = 4;
 
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
@@ -63,6 +72,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         buttons[3].setBounds(464, 10, 120, 100);
 
         for (int i=0; i<4; i++) {
+            buttons[i].addActionListener(this);
             add(buttons[i]); 
         }
     } // end of method "addPikachu"
@@ -126,66 +136,69 @@ public class MFGrafik extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == restartButton) {
             
+            monsterVector.clear();
+            monster1 = new Monster();
+            monster2 = new Monster();
+            monster3 = new Monster();
+            monster4 = new Monster();
+            monsterVector.add(monster1);
+            monsterVector.add(monster2);
+            monsterVector.add(monster3);
+            monsterVector.add(monster4);
+            output.println("Game restarting...");
+            textBox.setText("Game restarting...");    
+            
+        } if (e.getSource() == buttons[0]) {
             try {
-                monsterVector.clear();
-                Monster Monster1 = new Monster();
-                Monster Monster2 = new Monster();
-                Monster Monster3 = new Monster();
-                Monster Monster4 = new Monster();
-                monsterVector.add(Monster1);
-                monsterVector.add(Monster2);
-                monsterVector.add(Monster3);
-                monsterVector.add(Monster4);
-                textBox.setText("Game restarting");
-                Thread.sleep(waitTime);
-                textBox.setText("Game restarting.");
-                Thread.sleep(waitTime);
-                textBox.setText("Game restarting..");
-                Thread.sleep(waitTime);
-                textBox.setText("Game restarting...");
-                Thread.sleep(waitTime);    
+                svar = 1;
+                eat();
             } catch (InterruptedException IE) {
                 throw new RuntimeException();
             }
-            
-        } 
+        } if (e.getSource() == buttons[1]) {
+            try {
+                svar = 2;
+                eat();
+            } catch (InterruptedException IE) {
+                throw new RuntimeException();
+            }
+        } if (e.getSource() == buttons[2]) {
+            try {
+                svar = 3;
+                eat();
+            } catch (InterruptedException IE) {
+                throw new RuntimeException();
+            }
+        } if (e.getSource() == buttons[3]) {
+            try {
+                svar = 4;
+                eat();
+            } catch (InterruptedException IE) {
+                throw new RuntimeException();
+            }
+        }
     } // end of method "actionPerformed"
 
-    public void initalization() throws InterruptedException{
-        output.println("Welcome to Monster Feeder!" + newLine);
-        textBox.setText("Welcome to Pokemon Feeder!");
-        Thread.sleep(2000);
-
-        Monster Monster1 = new Monster();
-        Monster Monster2 = new Monster();
-        Monster Monster3 = new Monster();
-        Monster Monster4 = new Monster();
-        monsterVector.add(Monster1);
-        monsterVector.add(Monster2);
-        monsterVector.add(Monster3);
-        monsterVector.add(Monster4);
+    public void initalization() {
+        monster1 = new Monster();
+        monster2 = new Monster();
+        monster3 = new Monster();
+        monster4 = new Monster();
+        monsterVector.add(monster1);
+        monsterVector.add(monster2);
+        monsterVector.add(monster3);
+        monsterVector.add(monster4);
         for (int i=0; i<4; i++) {
             output.print("yum...");
         }
-
-        output.print(newLine + "Game starting");
-        textBox.setText("Game starting");
-        Thread.sleep(waitTime);
-        System.out.print(".");
-        textBox.setText("Game starting.");
-        Thread.sleep(waitTime);
-        System.out.print(".");
-        textBox.setText("Game starting..");
-        Thread.sleep(waitTime);
+        output.print(newLine + "Game starting...");
         System.out.println("." + newLine);
         textBox.setText("Game starting...");
-        Thread.sleep(waitTime);
         output.println(newLine);
     } // end of method "initalization"
 
-    public void gameLoop() throws IOException, InterruptedException{
-        int roundCount = -1;
-        while (monsterVector.size() > 1) {  
+    public void gameLoop() throws InterruptedException {
+        if (monsterVector.size() > 1) {
             
             output.println("Number of cookies each monster has:"); // for console
             for (int i=0; i<monsterVector.size(); i++) {
@@ -197,47 +210,54 @@ public class MFGrafik extends JFrame implements ActionListener {
             }
             output.print(newLine);
             feed();
-            eat();
-            output.println(newLine);
-            roundCount++;
-            scoreLabel.setText("Score: " + roundCount);
+        } else {
+            scoreLabel.setVisible(false);
+            output.println("Number of rounds played: " + roundCount);
+            textBox.setText("Final score: " + roundCount);
+            output.println("Thanks for playing!");
+            textBox.setText("<html>Final score: " + roundCount + "<br/> Thanks for playing!</html>");
+            for (int i=0; i<4; i++) {
+                buttons[i].removeActionListener(this);
+            }
         }
-        scoreLabel.setVisible(false);
-        output.println("Number of rounds played: " + roundCount);
-        textBox.setText("Final score: " + roundCount);
-        output.println("Thanks for playing!");
-        textBox.setText("<html>Final score: " + roundCount + "<br/> Thanks for playing!</html>");
     } // end of gameLoop    
 
-    public void feed() throws IOException, InterruptedException {
-        int food = ThreadLocalRandom.current().nextInt(0, 2 + 1);
+    public void feed() throws InterruptedException{
+        food = ThreadLocalRandom.current().nextInt(0, 3 + 1);
             if (food == 0) {
                 output.print("No cookies to give!");
                 textBox.setText("No cookies to give!");
-                Thread.sleep(1500);
+                Thread.sleep(waitTime);
+                eat();
             } else {
                 output.print("Cookies you can give: " + food + ". ");
                 output.print("Which monster do you want to feed?: ");
-                textBox.setText("<html>Cookies you can give: " + food + "<br/> Which Pokemon do you want to feed?</html>");
-                int svar = Integer.parseInt(input.readLine());
-                monsterVector.get(svar-1).increase(food); // svar-1 because monster "1" is actually in slot 0 of the vector  
+                textBox.setText("<html>Cookies you can give: " + food + "<br/> Which Pokemon do you want to feed?</html>");  
             }
             output.print(newLine);
     } // end of feed    
     
-    public void eat() {
+    public void eat() throws InterruptedException {
+        monsterVector.get(svar-1).increase(food); // "svar-1" because monster "1" is actually in slot 0 of the vector
         for (int i=0; i<monsterVector.size(); i++) {
             monsterVector.get(i).decrease();
 
             if (!monsterVector.get(i).isAlive()) { // if monster dies...
                 monsterVector.remove(monsterVector.get(i));
-                remove(buttons[i]);
+                fainted = new ImageIcon("fainted_pikachu2.png");
+                buttons[i].setIcon(fainted);
+                buttons[i].removeActionListener(this);
+                cookieCounter[i].setVisible(false);
                 output.print("aargh!...");
             } else {
                 output.print("yum...");
             }
             
         }
+        output.println(newLine);
+        roundCount++;
+        scoreLabel.setText("Score: " + roundCount);
+        gameLoop();
     } // end of eat
 
     public static void main(String[] args) throws IOException, InterruptedException{
