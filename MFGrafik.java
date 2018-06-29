@@ -17,25 +17,25 @@ import java.io.*;
     import javax.swing.JPanel;
     import javax.swing.SwingConstants;
 
+import jdk.nashorn.internal.ir.TryNode;
+
 
 public class MFGrafik extends JFrame implements ActionListener {
     private static final long serialVersionUID = 1L;
 
-    private JButton button;
-    private JLabel label;
     private JButton[] buttons = new JButton[4];
     private JLabel[] cookieCounter = new JLabel[4];
-    private JButton scoreButton;
+    private JLabel scoreLabel;
     private int score = 0;
     private JButton restartButton;
     private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 16);
     private JLabel textBox;
     private int waitTime = 500;
+    private ArrayList<Monster> monsterVector = new ArrayList<Monster>();
 
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     private String newLine = System.lineSeparator();
-    private ArrayList<Monster> monsterVector = new ArrayList<Monster>();
 
     public MFGrafik(String name) throws InterruptedException{
         setTitle(name);
@@ -68,16 +68,18 @@ public class MFGrafik extends JFrame implements ActionListener {
     } // end of method "addPikachu"
 
     public void addScore() { // Adds score button to frame
-        scoreButton = new JButton("Score: " + score);
-        scoreButton.setFont(standardFont);
-        scoreButton.setContentAreaFilled(true);
-        scoreButton.setBorderPainted(false);
-        scoreButton.setFocusPainted(false);
-        scoreButton.setBounds(10, 411, 120, 50);
+        scoreLabel = new JLabel("Score: " + score, SwingConstants.CENTER);
+        scoreLabel.setFont(standardFont);
+        //scoreLabel.setContentAreaFilled(true);
+        //scoreLabel.setBorderPainted(false);
+        //scoreLabel.setFocusPainted(false);
+        scoreLabel.setBounds(10, 411, 120, 50);
+        scoreLabel.setOpaque(true);
+        scoreLabel.setBackground(new Color(217, 229, 242));
 
-        scoreButton.addActionListener(this);
+        //scoreLabel.addActionListener(this);
 
-        add(scoreButton);
+        add(scoreLabel);
     } // end of method "addScore"
 
     public void addRestart() { // Adds restart button to frame
@@ -123,12 +125,29 @@ public class MFGrafik extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == restartButton) {
-            // dispose();
-            // System.exit(0);
             
-        } else if (e.getSource() == scoreButton) {
-            score++;
-            scoreButton.setText("Score: " + score);
+            try {
+                monsterVector.clear();
+                Monster Monster1 = new Monster();
+                Monster Monster2 = new Monster();
+                Monster Monster3 = new Monster();
+                Monster Monster4 = new Monster();
+                monsterVector.add(Monster1);
+                monsterVector.add(Monster2);
+                monsterVector.add(Monster3);
+                monsterVector.add(Monster4);
+                textBox.setText("Game restarting");
+                Thread.sleep(waitTime);
+                textBox.setText("Game restarting.");
+                Thread.sleep(waitTime);
+                textBox.setText("Game restarting..");
+                Thread.sleep(waitTime);
+                textBox.setText("Game restarting...");
+                Thread.sleep(waitTime);    
+            } catch (InterruptedException IE) {
+                throw new RuntimeException();
+            }
+            
         } 
     } // end of method "actionPerformed"
 
@@ -136,14 +155,15 @@ public class MFGrafik extends JFrame implements ActionListener {
         output.println("Welcome to Monster Feeder!" + newLine);
         textBox.setText("Welcome to Pokemon Feeder!");
         Thread.sleep(2000);
-        Monster aMonster = new Monster();
-        Monster bMonster = new Monster();
-        Monster cMonster = new Monster();
-        Monster dMonster = new Monster();
-        monsterVector.add(aMonster);
-        monsterVector.add(bMonster);
-        monsterVector.add(cMonster);
-        monsterVector.add(dMonster);
+
+        Monster Monster1 = new Monster();
+        Monster Monster2 = new Monster();
+        Monster Monster3 = new Monster();
+        Monster Monster4 = new Monster();
+        monsterVector.add(Monster1);
+        monsterVector.add(Monster2);
+        monsterVector.add(Monster3);
+        monsterVector.add(Monster4);
         for (int i=0; i<4; i++) {
             output.print("yum...");
         }
@@ -164,7 +184,7 @@ public class MFGrafik extends JFrame implements ActionListener {
     } // end of method "initalization"
 
     public void gameLoop() throws IOException, InterruptedException{
-        int roundCount = 0;
+        int roundCount = -1;
         while (monsterVector.size() > 1) {  
             
             output.println("Number of cookies each monster has:"); // for console
@@ -180,23 +200,25 @@ public class MFGrafik extends JFrame implements ActionListener {
             eat();
             output.println(newLine);
             roundCount++;
+            scoreLabel.setText("Score: " + roundCount);
         }
+        scoreLabel.setVisible(false);
         output.println("Number of rounds played: " + roundCount);
-        textBox.setText("Number of rounds played: " + roundCount);
-        Thread.sleep(waitTime);
+        textBox.setText("Final score: " + roundCount);
         output.println("Thanks for playing!");
-        textBox.setText("<html>Number of rounds played: " + roundCount + "<br/> Thanks for playing!</html>");
-        // Thread.sleep(2000);
-        // System.exit(0);
+        textBox.setText("<html>Final score: " + roundCount + "<br/> Thanks for playing!</html>");
     } // end of gameLoop    
 
-    public void feed() throws IOException {
+    public void feed() throws IOException, InterruptedException {
         int food = ThreadLocalRandom.current().nextInt(0, 2 + 1);
             if (food == 0) {
                 output.print("No cookies to give!");
+                textBox.setText("No cookies to give!");
+                Thread.sleep(1500);
             } else {
                 output.print("Cookies you can give: " + food + ". ");
                 output.print("Which monster do you want to feed?: ");
+                textBox.setText("<html>Cookies you can give: " + food + "<br/> Which Pokemon do you want to feed?</html>");
                 int svar = Integer.parseInt(input.readLine());
                 monsterVector.get(svar-1).increase(food); // svar-1 because monster "1" is actually in slot 0 of the vector  
             }
@@ -209,6 +231,7 @@ public class MFGrafik extends JFrame implements ActionListener {
 
             if (!monsterVector.get(i).isAlive()) { // if monster dies...
                 monsterVector.remove(monsterVector.get(i));
+                remove(buttons[i]);
                 output.print("aargh!...");
             } else {
                 output.print("yum...");
