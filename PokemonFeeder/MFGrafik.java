@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.*;
-    import java.util.concurrent.ThreadLocalRandom;
     import java.awt.Color;
     import java.awt.Dimension;
     import java.awt.FlowLayout;
@@ -25,7 +24,6 @@ public class MFGrafik extends JFrame implements ActionListener {
     private JButton restartButton;
     private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 16);
     private JLabel textBox;
-    private int waitTime = 500;
     private Monster monster1;
     private Monster monster2;
     private Monster monster3;
