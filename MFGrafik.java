@@ -40,8 +40,10 @@ public class MFGrafik extends JFrame implements ActionListener {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     private String newLine = System.lineSeparator();
+    private JButton okButton;
+    private int threshold = 0;
 
-    public MFGrafik(String name) throws InterruptedException{
+    public MFGrafik(String name){
         setTitle(name);
         setResizable(false);
         setContentPane(new JLabel(new ImageIcon("background1.jpg")));
@@ -130,7 +132,6 @@ public class MFGrafik extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) { // handles events
         if (e.getSource() == restartButton) { // resets variables etc.
-            try {
                 monsterVector.clear();
                 monster1 = new Monster();
                 monster2 = new Monster();
@@ -155,45 +156,38 @@ public class MFGrafik extends JFrame implements ActionListener {
                 scoreLabel.setText("Score: " + roundCount);
                 scoreLabel.setVisible(true);
 
+                threshold = 0;
+
                 output.println("Game restarting...");
                 textBox.setText("Game restarting...");
                 numberAlive = 4;
                 gameLoop();
 
-            } catch (InterruptedException IE) {
-                throw new RuntimeException();
-            }
             
         } if (e.getSource() == buttons[0]) {
-            try {
-                svar = 1;
-                eat();
-            } catch (InterruptedException IE) {
-                throw new RuntimeException();
-            }
+            svar = 1;
+            eat();
         } if (e.getSource() == buttons[1]) {
-            try {
-                svar = 2;
-                eat();
-            } catch (InterruptedException IE) {
-                throw new RuntimeException();
-            }
+            svar = 2;
+            eat();
         } if (e.getSource() == buttons[2]) {
-            try {
-                svar = 3;
-                eat();
-            } catch (InterruptedException IE) {
-                throw new RuntimeException();
-            }
+            svar = 3;
+            eat();
         } if (e.getSource() == buttons[3]) {
-            try {
-                svar = 4;
-                eat();
-            } catch (InterruptedException IE) {
-                throw new RuntimeException();
-            }
+            svar = 4;
+            eat();
+        } if (e.getSource() == okButton) {
+            eat();
         }
     } // end of method "actionPerformed"
+
+    public void addOK() {
+        okButton = new JButton("Oh, null!");
+        okButton.setFont(standardFont);
+        okButton.addActionListener(this);
+        okButton.setBounds(248, 284, 100, 43);
+        add(okButton);
+    } // end of method "okButton"
 
     public void initalization() { // creates monster1-4 and adds them to monsterVector
         monster1 = new Monster();
@@ -213,7 +207,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         output.println(newLine);
     } // end of method "initalization"
 
-    public void gameLoop() throws InterruptedException {
+    public void gameLoop() {
         if (numberAlive > 1) {
             output.println("Number of cookies each monster has:"); // for console
             for (int i=0; i<monsterVector.size(); i++) {
@@ -241,14 +235,18 @@ public class MFGrafik extends JFrame implements ActionListener {
         }
     } // end of gameLoop    
 
-    public void feed() throws InterruptedException{
+    public void feed(){
         food = ThreadLocalRandom.current().nextInt(0, 3 + 1);
             if (food == 0) {
                 output.print("No cookies to give!");
                 textBox.setText("No cookies to give!");
-                //game.repaint();
-                //Thread.sleep(1500);
-                eat();
+                if (threshold == 0) { // if it's the first time
+                    addOK();
+                } else { // if it's not the first time 
+                    okButton.setVisible(true);
+                }
+                threshold++;
+                // eat(); moved to actionListener for component "okButton"
             } else {
                 output.print("Cookies you can give: " + food + ". ");
                 output.print("Which monster do you want to feed?: ");
@@ -257,7 +255,10 @@ public class MFGrafik extends JFrame implements ActionListener {
             output.print(newLine);
     } // end of feed    
     
-    public void eat() throws InterruptedException {
+    public void eat() {
+        if (okButton.isVisible()) {
+            okButton.setVisible(false);
+        }
         if (svar>=1) { // makes sure that an answer has actually been given
             monsterVector.get(svar-1).increase(food); // "svar-1" because monster "1" is actually in slot 0 of the vector
         }
@@ -273,7 +274,7 @@ public class MFGrafik extends JFrame implements ActionListener {
                     buttons[i].setIcon(fainted);
                     buttons[i].removeActionListener(this);
                     cookieCounter[i].setVisible(false);
-                    output.println("NUMBER ALIVE:" + numberAlive);
+                    //output.println("NUMBER ALIVE:" + numberAlive);
 
                     output.print("aargh!..."); 
                 }
