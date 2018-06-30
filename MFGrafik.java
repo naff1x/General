@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+    import java.util.concurrent.ThreadLocalRandom;
     import java.awt.Color;
     import java.awt.Dimension;
     import java.awt.FlowLayout;
@@ -240,6 +241,7 @@ public class MFGrafik extends JFrame implements ActionListener {
                 textBox.setText("No cookies to give!");
                 if (threshold == 0) { // if it's the first time
                     addOK();
+                    game.repaint();
                 } else { // if it's not the first time 
                     okButton.setVisible(true);
                 }
