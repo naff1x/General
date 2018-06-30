@@ -182,9 +182,11 @@ public class MFGrafik extends JFrame implements ActionListener {
 
     public void addOK() {
         okButton = new JButton("Oh, null!");
+        //okButton.setText("Oh, null!");
         okButton.setFont(standardFont);
         okButton.addActionListener(this);
         okButton.setBounds(248, 284, 100, 43);
+        okButton.setVisible(false);        
         add(okButton);
     } // end of method "okButton"
 
@@ -239,13 +241,12 @@ public class MFGrafik extends JFrame implements ActionListener {
             if (food == 0) {
                 output.print("No cookies to give!");
                 textBox.setText("No cookies to give!");
-                if (threshold == 0) { // if it's the first time
-                    addOK();
-                    game.repaint();
+                if (threshold == 0) { // if it's the first time   
+                    okButton.setVisible(true);
+                    threshold++; 
                 } else { // if it's not the first time 
                     okButton.setVisible(true);
                 }
-                threshold++;
                 // eat(); moved to actionListener for component "okButton"
             } else {
                 output.print("Cookies you can give: " + food + ". ");
@@ -259,6 +260,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         if (okButton.isVisible()) {
             okButton.setVisible(false);
         }
+
         if (svar>=1) { // makes sure that an answer has actually been given
             monsterVector.get(svar-1).increase(food); // "svar-1" because monster "1" is actually in slot 0 of the vector
         }
@@ -268,7 +270,6 @@ public class MFGrafik extends JFrame implements ActionListener {
             if (!monsterVector.get(i).isAlive()) { // if monster dies (has UNDER 0 cookies)
                 if (!cookieCounter[i].isVisible()) { // if corresponding button doesn't have "fainted" icon set (hasn't already been delcared)
                 } else {
-                    //monsterVector.remove(monsterVector.get(i));
                     numberAlive--;
                     fainted = new ImageIcon("fainted_pikachu2.png");
                     buttons[i].setIcon(fainted);
@@ -299,6 +300,7 @@ public class MFGrafik extends JFrame implements ActionListener {
         game.addCookieCounters();
         game.addScore();
         game.addRestart();
+        game.addOK();
         game.repaint();
         game.gameLoop();
     }
