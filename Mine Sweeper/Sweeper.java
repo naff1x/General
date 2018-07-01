@@ -15,7 +15,25 @@ import java.io.*;
     import javax.swing.JPanel;
     import javax.swing.SwingConstants;
 
-    public class Sweeper {
+    public class Sweeper extends JFrame {
     
+        private static final long serialVersionUID = 1L;
+        private JFrame landingFrame;
+        static Sweeper game;
         
+        public static void main(String[] args) {
+            game = new Sweeper();
+            game.landingPage();
+
+        } // end of method "main"
+        
+        public void landingPage() { // method creates window that asks for size of playing field
+            landingFrame = new JFrame("Landing Page");
+            landingFrame.setSize(400,500);
+            landingFrame.setResizable(false);
+            landingFrame.setContentPane(new JLabel(new ImageIcon("Minesweeper.png")));
+            landingFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            landingFrame.setLocationRelativeTo(null);
+            landingFrame.setVisible(true);
+        } // end of method "landingPage"
     } // end of class "Sweeper"
