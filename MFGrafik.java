@@ -40,7 +40,7 @@ public class MFGrafik extends JFrame implements ActionListener {
     static PrintStream output = System.out;
     private String newLine = System.lineSeparator();
     private JButton okButton;
-    private int threshold = 0;
+
 
     public MFGrafik(String name){
         setTitle(name);
@@ -155,7 +155,7 @@ public class MFGrafik extends JFrame implements ActionListener {
                 scoreLabel.setText("Score: " + roundCount);
                 scoreLabel.setVisible(true);
 
-                threshold = 0;
+                okButton.setVisible(false);
 
                 output.println("Game restarting...");
                 textBox.setText("Game restarting...");
@@ -240,13 +240,8 @@ public class MFGrafik extends JFrame implements ActionListener {
         food = ThreadLocalRandom.current().nextInt(0, 3 + 1);
             if (food == 0) {
                 output.print("No cookies to give!");
-                textBox.setText("No cookies to give!");
-                if (threshold == 0) { // if it's the first time   
-                    okButton.setVisible(true);
-                    threshold++; 
-                } else { // if it's not the first time 
-                    okButton.setVisible(true);
-                }
+                textBox.setText("No cookies to give!"); 
+                okButton.setVisible(true);
                 // eat(); moved to actionListener for component "okButton"
             } else {
                 output.print("Cookies you can give: " + food + ". ");
@@ -260,10 +255,11 @@ public class MFGrafik extends JFrame implements ActionListener {
         if (okButton.isVisible()) {
             okButton.setVisible(false);
         }
-
-        if (svar>=1) { // makes sure that an answer has actually been given
+        ////////// Code inside this box is originally from the method "feed"
+        if (svar>=1 && !okButton.isVisible()) { // makes sure that an answer has actually been given
             monsterVector.get(svar-1).increase(food); // "svar-1" because monster "1" is actually in slot 0 of the vector
         }
+        //////////
         for (int i=0; i<monsterVector.size(); i++) {
             monsterVector.get(i).decrease();
 
@@ -287,6 +283,8 @@ public class MFGrafik extends JFrame implements ActionListener {
         output.println(newLine);
         roundCount++;
         scoreLabel.setText("Score: " + roundCount);
+        output.println("^^^ Round: " + roundCount);
+        output.println(newLine);
         gameLoop();
     } // end of eat
 
