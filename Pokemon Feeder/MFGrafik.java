@@ -84,7 +84,6 @@ public class MFGrafik extends JFrame implements ActionListener {
         scoreLabel.setBackground(new Color(217, 229, 242));
 
         //scoreLabel.addActionListener(this);
-
         add(scoreLabel);
     } // end of method "addScore"
 
