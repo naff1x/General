@@ -6,6 +6,6 @@ public class test {
     public static void main(String[] args) {
         int test = 0;
         test++;
-        output.println("The number:" + test);
+        output.println("The number:" + test + "hello");
     }
 }
