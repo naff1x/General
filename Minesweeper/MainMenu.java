@@ -21,6 +21,8 @@ import javax.swing.ImageIcon;
     import javax.swing.JPanel;
     import javax.swing.SwingConstants;
 
+import org.w3c.dom.css.RGBColor;
+
 
 public class MainMenu extends JFrame implements ActionListener, MouseListener {
     /// General variables
@@ -28,15 +30,19 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private static final long serialVersionUID = 1L;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
-    private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 18);
-    private Font hoverFont = new Font("Sans-Serif", Font.PLAIN, 22);
+    private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 19);
+    //private Font hoverFont = new Font("Sans-Serif", Font.PLAIN, 22);
+    private Color darkerGray = new Color(45, 45, 45);
+    private Color darkerWhite = new Color(240,240,240);
     /// Home Screen variables
     private JButton newGameButton;
+    private JButton instructionsButton;
     //
     
     public static void main(String[] args) {
         base = new MainMenu("Main Menu");
         base.addGameButton();
+        base.addInstructions();
         base.setLocationRelativeTo(null);
         base.repaint();
     } // end of method "main"
@@ -55,29 +61,50 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     public void addGameButton() {
         newGameButton = new JButton("New Game");
         newGameButton.setFont(standardFont);
-        newGameButton.setOpaque(false);
-        newGameButton.setBorder(BorderFactory.createLineBorder(Color.black));
-        newGameButton.setBounds(101, 134, 189, 60);
+        newGameButton.setOpaque(true);
+        newGameButton.setBackground(darkerGray);
+        newGameButton.setForeground(darkerWhite);
+        newGameButton.setBorder(BorderFactory.createLineBorder(darkerGray));
+        newGameButton.setBounds(101, 123, 189, 60);
         newGameButton.addActionListener(this);
         newGameButton.addMouseListener(this);
 
         add(newGameButton);
     } // end of method "addGameButton"
-    
+
+    public void addInstructions() {
+            instructionsButton = new JButton("Instructions");
+            instructionsButton.setFont(standardFont);
+            instructionsButton.setOpaque(true);
+            instructionsButton.setBackground(darkerGray);
+            instructionsButton.setForeground(darkerWhite);
+            instructionsButton.setBorder(BorderFactory.createLineBorder(darkerGray));
+            instructionsButton.setBounds(101, 204, 189, 60);
+            instructionsButton.addActionListener(this);
+            instructionsButton.addMouseListener(this);
+
+            add(instructionsButton);
+    } // end of method "addGameButton"    
+
     @Override
     public void mouseEntered(MouseEvent e) {
         if (e.getSource() == newGameButton) {
-            //newGameButton.setOpaque(true);
-            newGameButton.setFont(hoverFont);
-            //newGameButton.setBackground(Color.white);  
-        } 
+            newGameButton.setBackground(darkerWhite);
+            newGameButton.setForeground(darkerGray);
+        } else if (e.getSource() == instructionsButton) {
+            instructionsButton.setBackground(darkerWhite);
+            instructionsButton.setForeground(darkerGray);
+        }
     }  
     @Override
     public void mouseExited(MouseEvent e) {  
         if (e.getSource() == newGameButton) {
-            newGameButton.setFont(standardFont);
-            //newGameButton.setOpaque(false);  
-        } 
+            newGameButton.setBackground(darkerGray);
+            newGameButton.setForeground(darkerWhite);
+        } else if (e.getSource() == instructionsButton) {
+            instructionsButton.setBackground(darkerGray);
+            instructionsButton.setForeground(darkerWhite);
+        }
     }  
     
     @Override
