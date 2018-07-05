@@ -4,7 +4,8 @@ import java.io.*;
     import java.awt.Dimension;
     import java.awt.FlowLayout;
     import java.awt.Font;
-    import java.awt.Insets;
+import java.awt.FontFormatException;
+import java.awt.Insets;
     import java.awt.event.ActionEvent;
     import java.awt.event.ActionListener;
     import java.awt.event.MouseListener;
@@ -31,18 +32,27 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 19);
+    /// Remote variables
+    static Game game;
+    static Instructions instructions;
+    static HighScores highScores;
     //private Font hoverFont = new Font("Sans-Serif", Font.PLAIN, 22);
+    /// Colors
     private Color darkerGray = new Color(45, 45, 45);
     private Color darkerWhite = new Color(240,240,240);
     /// Home Screen variables
     private JButton newGameButton;
     private JButton instructionsButton;
-    //
+    private JButton highScoresButton;
+    /// Fonts
+    private Font pixelFont;
     
     public static void main(String[] args) {
         base = new MainMenu("Main Menu");
+        base.addFonts();
         base.addGameButton();
         base.addInstructions();
+        base.addHighScores();
         base.setLocationRelativeTo(null);
         base.repaint();
     } // end of method "main"
@@ -60,7 +70,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
 
     public void addGameButton() {
         newGameButton = new JButton("New Game");
-        newGameButton.setFont(standardFont);
+        newGameButton.setFont(pixelFont);
         newGameButton.setOpaque(true);
         newGameButton.setBackground(darkerGray);
         newGameButton.setForeground(darkerWhite);
@@ -73,18 +83,33 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     } // end of method "addGameButton"
 
     public void addInstructions() {
-            instructionsButton = new JButton("Instructions");
-            instructionsButton.setFont(standardFont);
-            instructionsButton.setOpaque(true);
-            instructionsButton.setBackground(darkerGray);
-            instructionsButton.setForeground(darkerWhite);
-            instructionsButton.setBorder(BorderFactory.createLineBorder(darkerGray));
-            instructionsButton.setBounds(101, 204, 189, 60);
-            instructionsButton.addActionListener(this);
-            instructionsButton.addMouseListener(this);
+        instructionsButton = new JButton("Instructions");
+        instructionsButton.setFont(standardFont);
+        instructionsButton.setOpaque(true);
+        instructionsButton.setBackground(darkerGray);
+        instructionsButton.setForeground(darkerWhite);
+        instructionsButton.setBorder(BorderFactory.createLineBorder(darkerGray));
+        instructionsButton.setBounds(101, 204, 189, 60);
+        instructionsButton.addActionListener(this);
+        instructionsButton.addMouseListener(this);
 
-            add(instructionsButton);
-    } // end of method "addGameButton"    
+        add(instructionsButton);
+    } // end of method "addInstructions"
+    
+    public void addHighScores() {
+        highScoresButton = new JButton("High Scores");
+        highScoresButton.setFont(standardFont);
+        highScoresButton.setOpaque(true);
+        highScoresButton.setBackground(darkerGray);
+        highScoresButton.setForeground(darkerWhite);
+        highScoresButton.setBorder(BorderFactory.createLineBorder(darkerGray));
+        highScoresButton.setBounds(101, 284, 189, 60);
+        highScoresButton.addActionListener(this);
+        highScoresButton.addMouseListener(this);
+
+        add(highScoresButton);
+
+    } // end of method "addHighScores"
 
     @Override
     public void mouseEntered(MouseEvent e) {
@@ -94,6 +119,9 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         } else if (e.getSource() == instructionsButton) {
             instructionsButton.setBackground(darkerWhite);
             instructionsButton.setForeground(darkerGray);
+        } else if (e.getSource() == highScoresButton) {
+            highScoresButton.setBackground(darkerWhite);
+            highScoresButton.setForeground(darkerGray);
         }
     }  
     @Override
@@ -104,6 +132,9 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         } else if (e.getSource() == instructionsButton) {
             instructionsButton.setBackground(darkerGray);
             instructionsButton.setForeground(darkerWhite);
+        } else if (e.getSource() == highScoresButton) {
+            highScoresButton.setBackground(darkerGray);
+            highScoresButton.setForeground(darkerWhite);
         }
     }  
     
@@ -118,7 +149,25 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newGameButton) {
             base.dispose();
-            Game game = new Game("Minesweeper");
+            game = new Game("Minesweeper");
+        } else if (e.getSource() == instructionsButton) {
+            base.dispose();
+            instructions = new Instructions("Instructions");
+        } else if (e.getSource() == highScoresButton) {
+            base.dispose();
+            highScores = new HighScores("High Scores");
         }
-    }
+    } // end of method "actionPerformed"
+
+    public void addFonts() {
+        try {
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.PLAIN, 19);   
+        } catch (FileNotFoundException e) {
+            e.addSuppressed(e);
+        } catch (FontFormatException e) {
+            e.addSuppressed(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } // end of method "addFonts"
 } // end of class "Sweeper"

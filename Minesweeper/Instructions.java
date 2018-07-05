@@ -1,10 +1,10 @@
 import javax.swing.JFrame;
 
-public class Game extends JFrame {
+public class Instructions extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    public Game(String name) {
+	public Instructions(String name) {
         setTitle(name);
         setResizable(false);
         setLayout(null);
