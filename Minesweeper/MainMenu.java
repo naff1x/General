@@ -84,7 +84,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
 
     public void addInstructions() {
         instructionsButton = new JButton("Instructions");
-        instructionsButton.setFont(standardFont);
+        instructionsButton.setFont(pixelFont);
         instructionsButton.setOpaque(true);
         instructionsButton.setBackground(darkerGray);
         instructionsButton.setForeground(darkerWhite);
@@ -98,7 +98,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     
     public void addHighScores() {
         highScoresButton = new JButton("High Scores");
-        highScoresButton.setFont(standardFont);
+        highScoresButton.setFont(pixelFont);
         highScoresButton.setOpaque(true);
         highScoresButton.setBackground(darkerGray);
         highScoresButton.setForeground(darkerWhite);
@@ -161,7 +161,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
 
     public void addFonts() {
         try {
-            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.PLAIN, 19);   
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.PLAIN, 20);   
         } catch (FileNotFoundException e) {
             e.addSuppressed(e);
         } catch (FontFormatException e) {
