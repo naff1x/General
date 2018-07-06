@@ -19,8 +19,11 @@ import javax.swing.ImageIcon;
     import javax.swing.JButton;
     import javax.swing.JFrame;
     import javax.swing.JLabel;
-    import javax.swing.JPanel;
-    import javax.swing.SwingConstants;
+import javax.swing.JOptionPane;
+import javax.swing.JOptionPane.*;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import org.w3c.dom.css.RGBColor;
 
@@ -44,6 +47,18 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private JButton newGameButton;
     private JButton instructionsButton;
     private JButton highScoresButton;
+    /// Variables for "newGameButton"
+    //private Object[] message;
+    private int gameVariables;
+    private String height;
+    private String width;
+    private String bombs;
+    private int heightInt;
+    private int widthInt;
+    private int bombsInt;
+    private JTextField widthField;
+    private JTextField heightField;
+    private JTextField bombsField;
     /// Fonts
     private Font pixelFont;
     
@@ -148,8 +163,40 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newGameButton) {
-            base.dispose();
-            game = new Game("Minesweeper");
+            try {
+                widthField = new JTextField();
+                heightField = new JTextField();
+                bombsField = new JTextField();
+
+                Object[] message = {
+                    "Enter width of game:", widthField,
+                    "Enter height of game:", heightField,
+                    "Enter number of bombs:", bombsField,
+                };
+
+                gameVariables = JOptionPane.showConfirmDialog(null, message, "Enter values", JOptionPane.OK_CANCEL_OPTION);
+
+                if (gameVariables == JOptionPane.OK_OPTION) {
+                    width = widthField.getText();
+                    widthInt = Integer.parseInt(width);
+                    height = heightField.getText();
+                    heightInt = Integer.parseInt(height);
+                    bombs = bombsField.getText();
+                    bombsInt = Integer.parseInt(bombs);
+                    base.dispose();
+                    game = new Game("Minesweeper", widthInt, heightInt, bombsInt); 
+                } 
+                else if (gameVariables == JOptionPane.CANCEL_OPTION) {} 
+                else if (gameVariables == JOptionPane.NO_OPTION) {} 
+                else if (gameVariables == JOptionPane.CLOSED_OPTION) {}
+                /*
+                width = JOptionPane.showInputDialog(null, "Enter width of playing field: ", "Choose width, height and number of mines for game!", JOptionPane.PLAIN_MESSAGE);
+                height = JOptionPane.showInputDialog("Enter height of playing field: ");
+                widthInt = Integer.parseInt(width);
+                heightInt = Integer.parseInt(height);
+                */
+            } catch (Exception ex) {
+            }
         } else if (e.getSource() == instructionsButton) {
             base.dispose();
             instructions = new Instructions("Instructions");
