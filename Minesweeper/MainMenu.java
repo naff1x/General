@@ -24,6 +24,7 @@ import javax.swing.JOptionPane.*;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 
 import org.w3c.dom.css.RGBColor;
 
@@ -43,13 +44,14 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     /// Colors
     private Color darkerGray = new Color(45, 45, 45);
     private Color darkerWhite = new Color(240,240,240);
+    private Color regularGray = new Color(190, 190, 190);
     /// Home Screen variables
     private JButton newGameButton;
     private JButton instructionsButton;
     private JButton highScoresButton;
     /// Variables for "newGameButton"
-    //private Object[] message;
-    private int gameVariables;
+    private UIManager optionPaneManager;
+    private int gameVariables; // Used for JOptionPane
     private String height;
     private String width;
     private String bombs;
@@ -61,6 +63,8 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private JTextField bombsField;
     /// Fonts
     private Font pixelFont;
+    /// Images
+    private ImageIcon bombIcon;
     
     public static void main(String[] args) {
         base = new MainMenu("Main Menu");
@@ -174,7 +178,13 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
                     "Enter number of bombs:", bombsField,
                 };
 
-                gameVariables = JOptionPane.showConfirmDialog(null, message, "Enter values", JOptionPane.OK_CANCEL_OPTION);
+                optionPaneManager = new UIManager();
+                optionPaneManager.put("OptionPane.background", regularGray);
+                optionPaneManager.put("Panel.background", regularGray);
+
+                bombIcon = new ImageIcon("bombIcon.png");
+
+                gameVariables = JOptionPane.showConfirmDialog(null, message, "Enter values", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, bombIcon);
 
                 if (gameVariables == JOptionPane.OK_OPTION) {
                     width = widthField.getText();
@@ -183,21 +193,31 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
                     heightInt = Integer.parseInt(height);
                     bombs = bombsField.getText();
                     bombsInt = Integer.parseInt(bombs);
-                    base.dispose();
-                    game = new Game("Minesweeper", widthInt, heightInt, bombsInt); 
+                    
+                    if (bombsInt > 0 && heightInt > 0 && widthInt > 0) {
+                        base.dispose();
+                        game = new Game("Minesweeper", widthInt, heightInt, bombsInt); 
+                    }
+                    if (bombsInt <= 0 || heightInt <= 0 || widthInt <= 0) {
+                        JOptionPane.showMessageDialog(null, "Please enter a value higher than 0 for all fields!", "What are you doing?", JOptionPane.PLAIN_MESSAGE);
+                    } 
+                    /* // This part doesn't seem to add anything
+                    if (bombs.equals(null) || height.equals(null) || width.equals(null)) {
+                        JOptionPane.showMessageDialog(null, "Please enter a value for all fields!", "You missed something...", JOptionPane.PLAIN_MESSAGE);
+                    }
+                    */
                 } 
-                else if (gameVariables == JOptionPane.CANCEL_OPTION) {} 
-                else if (gameVariables == JOptionPane.NO_OPTION) {} 
-                else if (gameVariables == JOptionPane.CLOSED_OPTION) {}
-                /*
-                width = JOptionPane.showInputDialog(null, "Enter width of playing field: ", "Choose width, height and number of mines for game!", JOptionPane.PLAIN_MESSAGE);
-                height = JOptionPane.showInputDialog("Enter height of playing field: ");
-                widthInt = Integer.parseInt(width);
-                heightInt = Integer.parseInt(height);
-                */
-            } catch (Exception ex) {
-            }
-        } else if (e.getSource() == instructionsButton) {
+                if (gameVariables == JOptionPane.CANCEL_OPTION) {
+                } 
+                if (gameVariables == JOptionPane.NO_OPTION) {
+                    JOptionPane.showMessageDialog(null, "Please enter a value for all fields!", "You missed something...", JOptionPane.PLAIN_MESSAGE);
+                } 
+                if (gameVariables == JOptionPane.CLOSED_OPTION) {
+                }
+            } catch (Exception ex) {}
+        }
+        
+        else if (e.getSource() == instructionsButton) {
             base.dispose();
             instructions = new Instructions("Instructions");
         } else if (e.getSource() == highScoresButton) {
