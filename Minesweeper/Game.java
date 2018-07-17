@@ -29,12 +29,14 @@ import org.w3c.dom.css.RGBColor;
 
 public class Game extends JFrame {
 
+    // TODO: Edit constructors so that frame is larger than the actual playing field 
+
     private static final long serialVersionUID = 1L;
 
     private int bombs;
     /// Fonts
     private Font pixelFont;
-    ///
+    /// 
     
     public Game(String name, int width, int height, int bombsFromInput) {
         bombs = bombsFromInput;
@@ -43,6 +45,7 @@ public class Game extends JFrame {
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(200, 200));
         setSize(width, height);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -60,3 +63,9 @@ public class Game extends JFrame {
         }
     } // end of method "addFonts"
 } // end of class "game"
+
+class Square extends JButton {
+
+	private static final long serialVersionUID = 1L;
+
+} // end of class "Square" 

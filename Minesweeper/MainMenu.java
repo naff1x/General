@@ -35,7 +35,6 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private static final long serialVersionUID = 1L;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
-    private Font standardFont = new Font("Sans-Serif", Font.PLAIN, 19);
     /// Remote variables
     static Game game;
     static Instructions instructions;
@@ -63,6 +62,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private JTextField bombsField;
     /// Fonts
     private Font pixelFont;
+    private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 19);
     /// Images
     private ImageIcon bombIcon;
     
