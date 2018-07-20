@@ -30,12 +30,12 @@ import org.w3c.dom.css.RGBColor;
 
 
 public class MainMenu extends JFrame implements ActionListener, MouseListener {
-    /// General variables
+    /// Master variables
     static MainMenu base; // let's program know about game's existence 
     private static final long serialVersionUID = 1L;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
-    /// Remote variables
+    /// Remote variables for other classes
     static Game game;
     static Instructions instructions;
     static HighScores highScores;

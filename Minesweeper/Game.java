@@ -29,24 +29,27 @@ import org.w3c.dom.css.RGBColor;
 
 public class Game extends JFrame {
 
-    // TODO: Edit constructors so that frame is larger than the actual playing field 
-
     private static final long serialVersionUID = 1L;
 
+    /// Variables for reciving input from constructor method
     private int bombs;
+    private int width;
+    private int height;
     /// Fonts
     private Font pixelFont;
     /// 
     
-    public Game(String name, int width, int height, int bombsFromInput) {
+    public Game(String nameFromInput, int widthFromInput, int heightFromInput, int bombsFromInput) {
         bombs = bombsFromInput;
-        
-        setTitle(name);
+        width = widthFromInput * 20; // Multiplied by 20 to make room for the 20x20 cells that will make up the playing field
+        height = heightFromInput * 20;
+
+        setTitle(nameFromInput);
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(200, 200));
-        setSize(width, height);
+        setSize(width + 40, height + 50); // Plus 40 and 50 to add margin between the playing field and the border of the JFrame
         setLocationRelativeTo(null);
         setVisible(true);
     } // end of contructor method "game"
@@ -64,8 +67,8 @@ public class Game extends JFrame {
     } // end of method "addFonts"
 } // end of class "game"
 
-class Square extends JButton {
+class Cell extends JButton {
 
 	private static final long serialVersionUID = 1L;
 
-} // end of class "Square" 
+} // end of class "Cell" 
