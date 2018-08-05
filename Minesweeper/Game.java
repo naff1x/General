@@ -92,7 +92,7 @@ class Board extends JPanel {
     public Board(int xWidth, int yHeight, int frameWidth, int frameHeight) {
         setLayout(new GridLayout(xWidth, yHeight));
         setBackground(Color.yellow);
-        setBounds(10, 10, frameWidth - 20, frameHeight - 50);
+        setBounds(10, 10, frameWidth - 40, frameHeight - 50); // Bounds reduced by 40px & 50px to make the panel fit within the frame.
         setVisible(true);
     } // end of constructor method "Board"
 } // end of class "Board"
