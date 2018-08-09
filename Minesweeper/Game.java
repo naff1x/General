@@ -42,13 +42,18 @@ public class Game extends JFrame {
     private int squareHeight;
     /// Fonts
     private Font pixelFont;
-    /// Remote variables for other classes
+    /// Variables for class "Board"
     private Board playground;
+    /// Variables for class "Header"
+    private Header topBar;
 
     public Game(String nameFromInput, int widthFromInput, int heightFromInput, int bombsFromInput) {
         bombs = bombsFromInput;
         frameWidth = widthFromInput * 20 + 40;   // Multiplied by 20 to make room for the 20x20 cells that will make up the playing field
-        frameHeight = heightFromInput * 20 + 50; // Plus 40 and 50 to add margin between the playing field and the border of the JFrame
+        frameHeight = heightFromInput * 20 + 80; // Plus 40 and 60 to add margin between the playing field and the border of the JFrame
+        
+        // These two integers contain the raw input from the user.
+        // In other words, the requested number of squares for width and height.
         squareWidth = widthFromInput;
         squareHeight = heightFromInput;
 
@@ -56,22 +61,22 @@ public class Game extends JFrame {
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(200, 200));
+        setMinimumSize(new Dimension(340, 200));
         setSize(frameWidth, frameHeight);
         setLocationRelativeTo(null);
         setVisible(true);
         
         /// Other methods and classes goes below
         addFonts();
-        playground = new Board(squareWidth, squareHeight, frameWidth, frameHeight);
-        add(playground);
+        if (frameWidth > 340) {
+            topBar = new Header(frameWidth);
+        } else {
+            topBar = new Header(340);
+        }
+        add(topBar);
 
-        /* The code inside this comment box probably won't work as the variable "playground" (class Board) isn't applicable for the method "add"
-        playground = new Board();
-        playground.setBoard(widthFromInput, heightFromInput); // Passes on the width and height recived from "Game"-method's input arguments to the class "Board"
-
+        playground = new Board(squareWidth, squareHeight);
         add(playground);
-        */
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -87,12 +92,35 @@ public class Game extends JFrame {
     } // end of method "addFonts"
 } // end of class "game"
 
+class Header extends JPanel {
+
+    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+    static PrintStream output = System.out;
+
+    private int barCoordinate;
+
+    public Header(int widthOfFrame) {
+
+        barCoordinate = widthOfFrame/2 - 150;
+        output.println(barCoordinate);
+
+        // setLayout(null);
+        setBackground(Color.blue);
+        setBounds(barCoordinate, 5, 300, 30);
+        setVisible(true);
+
+    } // end of constructor method "Header"
+} // end of class "Header"
+
 class Board extends JPanel { 
 
-    public Board(int xWidth, int yHeight, int frameWidth, int frameHeight) {
+    public Board(int xWidth, int yHeight) {
+
+        // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
+
         setLayout(new GridLayout(xWidth, yHeight));
         setBackground(Color.yellow);
-        setBounds(10, 10, frameWidth - 40, frameHeight - 50); // Bounds reduced by 40px & 50px to make the panel fit within the frame.
+        setBounds(20, 40, xWidth * 20, yHeight * 20); // xWidth and yHeight multiplied by 20 to fit in the 20px*20px squares.
         setVisible(true);
     } // end of constructor method "Board"
 } // end of class "Board"

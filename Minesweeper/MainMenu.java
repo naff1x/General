@@ -36,8 +36,8 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     /// Remote variables for other classes
-    static Game game;
-    static Instructions instructions;
+    static Game game;                       // TODO: I suspect these variables should be made private. 
+    static Instructions instructions;       // I think they will create problems when trying to go back and forth between e.g. the game and main menu.
     static HighScores highScores;
     //private Font hoverFont = new Font("Sans-Serif", Font.PLAIN, 22);
     /// Colors
