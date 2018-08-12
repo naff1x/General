@@ -94,27 +94,96 @@ public class Game extends JFrame {
 
 class Header extends JPanel {
 
+    private static final long serialVersionUID = 1L;
+	/// General varibles
+    private Dimension componentDimension;
+    private int barCoordinate;
+    /// Visual components
+    private JLabel scoreLabel;
+    private JButton menuButton;
+    private JButton restartButton;
+    private JLabel timeLabel;
+    /// Other variables
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
-
-    private int barCoordinate;
+    /// Fonts
+    private Font pixelFont;
+    /// Colors
+    private Color darkerGray = new Color(45, 45, 45);
+    private Color darkerWhite = new Color(240,240,240);
+    private Color regularGray = new Color(190, 190, 190);
 
     public Header(int widthOfFrame) {
 
         barCoordinate = widthOfFrame/2 - 150;
-        output.println(barCoordinate);
+        output.println("Header starts at:" + barCoordinate);
 
         // setLayout(null);
-        setBackground(Color.blue);
+        //setBackground(Color.white);
         setBounds(barCoordinate, 5, 300, 30);
+        setLayout(new FlowLayout(FlowLayout.LEFT, 0, -6));
+        addFonts();
+        addComponents();
+        repaint();
         setVisible(true);
 
     } // end of constructor method "Header"
+
+    public void addComponents() {
+
+        componentDimension = new Dimension(64, 30);
+
+        scoreLabel = new JLabel("00000", SwingConstants.CENTER);
+        scoreLabel.setFont(pixelFont);
+        scoreLabel.setForeground(darkerWhite);
+        scoreLabel.setMinimumSize(componentDimension);
+        scoreLabel.setPreferredSize(componentDimension);
+        scoreLabel.setMaximumSize(componentDimension);
+        scoreLabel.setOpaque(true);
+        scoreLabel.setBackground(darkerGray);
+        add(scoreLabel);
+
+        menuButton = new JButton(new ImageIcon("ToMenu.png"));
+        menuButton.setContentAreaFilled(true);
+        menuButton.setBorderPainted(true);
+        menuButton.setFocusPainted(false);
+        add(menuButton);
+
+        restartButton = new JButton(new ImageIcon("Restart.png"));
+        restartButton.setContentAreaFilled(true);
+        restartButton.setBorderPainted(true);
+        restartButton.setFocusPainted(false);
+        add(restartButton);
+
+        timeLabel = new JLabel("00000", SwingConstants.CENTER);
+        timeLabel.setFont(pixelFont);
+        timeLabel.setForeground(darkerWhite);
+        timeLabel.setMinimumSize(componentDimension);
+        timeLabel.setPreferredSize(componentDimension);
+        timeLabel.setMaximumSize(componentDimension);
+        timeLabel.setOpaque(true);
+        timeLabel.setBackground(darkerGray);
+        add(timeLabel);
+    }
+
+    public void addFonts() {
+        try {
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.PLAIN, 20);   
+        } catch (FileNotFoundException e) {
+            e.addSuppressed(e);
+        } catch (FontFormatException e) {
+            e.addSuppressed(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } // end of method "addFonts"
 } // end of class "Header"
 
 class Board extends JPanel { 
 
-    public Board(int xWidth, int yHeight) {
+    private static final long serialVersionUID = 1L;
+
+	public Board(int xWidth, int yHeight) {
 
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
 
