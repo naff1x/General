@@ -33,7 +33,7 @@ public class Game extends JFrame {
     // TODO: Resize "bombIcon.png" and make it fit inside the 20x20 cells
 
     private static final long serialVersionUID = 1L;
-
+    private Game game;
     /// Variables for reciving input from constructor method
     private int bombs;
     private int frameWidth;
@@ -106,22 +106,27 @@ class Header extends JPanel {
     /// Other variables
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
+    private MainMenu menu;
     /// Fonts
     private Font pixelFont;
     /// Colors
     private Color darkerGray = new Color(45, 45, 45);
     private Color darkerWhite = new Color(240,240,240);
     private Color regularGray = new Color(190, 190, 190);
+    /// Variables needed for restart
+    private String rawName;
+    private int rawWidth;
+    private int rawHeight;
+    private int rawBombs;
 
     public Header(int widthOfFrame) {
 
         barCoordinate = widthOfFrame/2 - 150;
         output.println("Header starts at:" + barCoordinate);
 
-        // setLayout(null);
-        //setBackground(Color.white);
-        setBounds(barCoordinate, 5, 300, 30);
-        setLayout(new FlowLayout(FlowLayout.LEFT, 0, -6));
+        //setBackground(Color.red);
+        setBounds(barCoordinate, 7, 300, 30);
+        setLayout(new FlowLayout(FlowLayout.CENTER,0, -6));
         addFonts();
         addComponents();
         repaint();
@@ -130,10 +135,17 @@ class Header extends JPanel {
     } // end of constructor method "Header"
 
     public void addComponents() {
-
+        
         componentDimension = new Dimension(64, 30);
 
-        scoreLabel = new JLabel("00000", SwingConstants.CENTER);
+        addScoreLabel();
+        addMenuButton();
+        addRestartButton();
+        addTimeLabel();
+    } // end of method "addComponents"
+
+    public void addScoreLabel() {
+        scoreLabel = new JLabel("0000", SwingConstants.CENTER);
         scoreLabel.setFont(pixelFont);
         scoreLabel.setForeground(darkerWhite);
         scoreLabel.setMinimumSize(componentDimension);
@@ -142,20 +154,55 @@ class Header extends JPanel {
         scoreLabel.setOpaque(true);
         scoreLabel.setBackground(darkerGray);
         add(scoreLabel);
+    } // end of method "addScoreLabel"
 
+    public void addMenuButton() {
         menuButton = new JButton(new ImageIcon("ToMenu.png"));
         menuButton.setContentAreaFilled(true);
         menuButton.setBorderPainted(true);
         menuButton.setFocusPainted(false);
-        add(menuButton);
 
+        menuButton.setMinimumSize(new Dimension(70, 35));;
+        menuButton.setPreferredSize(new Dimension(70, 35));
+        menuButton.setMaximumSize(new Dimension(70, 35));
+        menuButton.setOpaque(false);
+
+        menuButton.addActionListener(new ActionListener(){
+        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                output.println("Menu button pressed!");
+                menu = new MainMenu("Main Menu");
+            }
+        });
+
+        add(menuButton);
+    } // end of method "addMenuButton"
+
+    public void addRestartButton() {
         restartButton = new JButton(new ImageIcon("Restart.png"));
         restartButton.setContentAreaFilled(true);
         restartButton.setBorderPainted(true);
         restartButton.setFocusPainted(false);
-        add(restartButton);
 
-        timeLabel = new JLabel("00000", SwingConstants.CENTER);
+        restartButton.setMinimumSize(new Dimension(70, 35));;
+        restartButton.setPreferredSize(new Dimension(70, 35));
+        restartButton.setMaximumSize(new Dimension(70, 35));
+        restartButton.setOpaque(false);
+
+        restartButton.addActionListener(new ActionListener(){
+        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                output.println("Restart button pressed!");
+            }
+        });
+
+        add(restartButton);
+    } // end of method "addRestartButton"
+
+    public void addTimeLabel() {
+        timeLabel = new JLabel("0000", SwingConstants.CENTER);
         timeLabel.setFont(pixelFont);
         timeLabel.setForeground(darkerWhite);
         timeLabel.setMinimumSize(componentDimension);
@@ -164,7 +211,7 @@ class Header extends JPanel {
         timeLabel.setOpaque(true);
         timeLabel.setBackground(darkerGray);
         add(timeLabel);
-    }
+    } // end of method "addTimeLabel"
 
     public void addFonts() {
         try {
