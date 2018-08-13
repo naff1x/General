@@ -48,6 +48,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private JButton newGameButton;
     private JButton instructionsButton;
     private JButton highScoresButton;
+    static int threshold = 0;
     /// Variables for "newGameButton"
     private UIManager optionPaneManager;
     private int gameVariables; // Used for JOptionPane
@@ -74,6 +75,9 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         base.addHighScores();
         base.setLocationRelativeTo(null);
         base.repaint();
+
+        threshold += 1;
+        output.println("Threshold at: " + threshold);
     } // end of method "main"
 
     public MainMenu(String name) { // creates frame for Home Screen
@@ -85,6 +89,15 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         setSize(400,500);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        if (threshold > 0) {
+            addFonts();
+            addGameButton();
+            addInstructions();
+            addHighScores();
+            setLocationRelativeTo(null);
+            repaint();
+        }
     } // end of constructor method "Sweeper"
 
     public void addGameButton() {
@@ -195,7 +208,8 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
                     bombsInt = Integer.parseInt(bombs);
                     
                     if (bombsInt > 0 && heightInt > 0 && widthInt > 0) {
-                        base.dispose();
+                        //base.dispose();
+                        dispose();
                         game = new Game("Minesweeper", widthInt, heightInt, bombsInt); 
                     }
                     if (bombsInt <= 0 || heightInt <= 0 || widthInt <= 0) {
