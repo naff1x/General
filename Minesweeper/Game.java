@@ -28,12 +28,13 @@ import javax.swing.SwingConstants;
 
 import org.w3c.dom.css.RGBColor;
 
-public class Game extends JFrame {
+public class Game {
 
     // TODO: Resize "bombIcon.png" and make it fit inside the 20x20 cells
 
     private static final long serialVersionUID = 1L;
     private Game game;
+    private JFrame gameFrame;
     /// Variables for reciving input from constructor method
     private int bombs;
     private int frameWidth;
@@ -57,14 +58,16 @@ public class Game extends JFrame {
         squareWidth = widthFromInput;
         squareHeight = heightFromInput;
 
-        setTitle(nameFromInput);
-        setResizable(false);
-        setLayout(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(340, 200));
-        setSize(frameWidth, frameHeight);
-        setLocationRelativeTo(null);
-        setVisible(true);
+        gameFrame = new JFrame();
+
+        gameFrame.setTitle(nameFromInput);
+        gameFrame.setResizable(false);
+        gameFrame.setLayout(null);
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setMinimumSize(new Dimension(340, 200));
+        gameFrame.setSize(frameWidth, frameHeight);
+        gameFrame.setLocationRelativeTo(null);
+        gameFrame.setVisible(true);
         
         /// Other methods and classes goes below
         addFonts();
@@ -73,10 +76,10 @@ public class Game extends JFrame {
         } else {
             topBar = new Header(340);
         }
-        add(topBar);
+        gameFrame.add(topBar);
 
         playground = new Board(squareWidth, squareHeight);
-        add(playground);
+        gameFrame.add(playground);
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -113,11 +116,6 @@ class Header extends JPanel {
     private Color darkerGray = new Color(45, 45, 45);
     private Color darkerWhite = new Color(240,240,240);
     private Color regularGray = new Color(190, 190, 190);
-    /// Variables needed for restart
-    private String rawName;
-    private int rawWidth;
-    private int rawHeight;
-    private int rawBombs;
 
     public Header(int widthOfFrame) {
 
@@ -195,6 +193,7 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Restart button pressed!");
+                // TODO: Dipose the JFrame "gameFrame" (problem is that it is in another class) 
             }
         });
 
@@ -229,6 +228,9 @@ class Header extends JPanel {
 class Board extends JPanel { 
 
     private static final long serialVersionUID = 1L;
+    private int cellID;
+    private int numberOfCells;
+    private Cell[] cellArray;
 
 	public Board(int xWidth, int yHeight) {
 
@@ -237,12 +239,28 @@ class Board extends JPanel {
         setLayout(new GridLayout(xWidth, yHeight));
         setBackground(Color.yellow);
         setBounds(20, 40, xWidth * 20, yHeight * 20); // xWidth and yHeight multiplied by 20 to fit in the 20px*20px squares.
+
+        numberOfCells = xWidth*yHeight;
+        
+        cellArray = new Cell[numberOfCells];
+
+        for (int i=0; i < numberOfCells; i++) {
+            cellArray[i] = new Cell(i);
+            add(cellArray[i]);
+        }
         setVisible(true);
     } // end of constructor method "Board"
 } // end of class "Board"
 
-/*
-class Cell { // TODO: Should implement an ActionListner to push the logic down the hierarchy as far as possible.
 
+class Cell extends JButton { // TODO: Should implement an ActionListner for each cell to push the logic down the hierarchy as far as possible.
+
+    public Cell(int ID) {
+        setMinimumSize(new Dimension(20,20));;
+        setPreferredSize(new Dimension(20,20));
+        setMaximumSize(new Dimension(20,20));
+        setBackground(Color.blue);
+        setForeground(Color.yellow);
+        setText(""+ID);
+    } // end of constructor method "Cell"
 } // end of class "Cell" 
-*/
