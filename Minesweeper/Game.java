@@ -72,9 +72,9 @@ public class Game {
         /// Other methods and classes goes below
         addFonts();
         if (frameWidth > 340) {
-            topBar = new Header(frameWidth);
+            topBar = new Header(frameWidth, gameFrame);
         } else {
-            topBar = new Header(340);
+            topBar = new Header(340, gameFrame);
         }
         gameFrame.add(topBar);
 
@@ -110,6 +110,7 @@ class Header extends JPanel {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     private MainMenu menu;
+    private JFrame frameHolder;
     /// Fonts
     private Font pixelFont;
     /// Colors
@@ -117,8 +118,8 @@ class Header extends JPanel {
     private Color darkerWhite = new Color(240,240,240);
     private Color regularGray = new Color(190, 190, 190);
 
-    public Header(int widthOfFrame) {
-
+    public Header(int widthOfFrame, JFrame mainFrame) {
+        frameHolder = mainFrame;
         barCoordinate = widthOfFrame/2 - 150;
         output.println("Header starts at:" + barCoordinate);
 
@@ -170,6 +171,7 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Menu button pressed!");
+                frameHolder.dispose();
                 menu = new MainMenu("Main Menu");
             }
         });
@@ -226,7 +228,6 @@ class Header extends JPanel {
 } // end of class "Header"
 
 class Board extends JPanel { 
-
     private static final long serialVersionUID = 1L;
     private int cellID;
     private int numberOfCells;
@@ -235,6 +236,7 @@ class Board extends JPanel {
 	public Board(int xWidth, int yHeight) {
 
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
+        // TODO: Issue: Different values for width and height (e.g. 12 and 15) results in the layout breaking.
 
         setLayout(new GridLayout(xWidth, yHeight));
         setBackground(Color.yellow);
@@ -254,13 +256,15 @@ class Board extends JPanel {
 
 
 class Cell extends JButton { // TODO: Should implement an ActionListner for each cell to push the logic down the hierarchy as far as possible.
+    private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
 
     public Cell(int ID) {
         setMinimumSize(new Dimension(20,20));;
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
-        setBackground(Color.blue);
-        setForeground(Color.yellow);
+        //setIcon(new ImageIcon("UnopenedSquare.png"));
+        setForeground(Color.black);
+        setFont(fallbackFont);
         setText(""+ID);
     } // end of constructor method "Cell"
 } // end of class "Cell" 
