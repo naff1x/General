@@ -55,8 +55,9 @@ public class Game {
         
         // These two integers contain the raw input from the user.
         // In other words, the requested number of squares for width and height.
-        squareWidth = widthFromInput;
+        /* squareWidth = widthFromInput;
         squareHeight = heightFromInput;
+        */
 
         gameFrame = new JFrame();
 
@@ -68,6 +69,7 @@ public class Game {
         gameFrame.setSize(frameWidth, frameHeight);
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
+        System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
         
         /// Other methods and classes goes below
         addFonts();
@@ -78,8 +80,11 @@ public class Game {
         }
         gameFrame.add(topBar);
 
-        playground = new Board(squareWidth, squareHeight);
+        playground = new Board(widthFromInput, heightFromInput);
         gameFrame.add(playground);
+        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
+
+        // gameFrame.pack() doesn't work.
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -236,14 +241,13 @@ class Board extends JPanel {
 	public Board(int xWidth, int yHeight) {
 
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
-        // TODO: Issue: Different values for width and height (e.g. 12 and 15) results in the layout breaking.
 
-        setLayout(new GridLayout(xWidth, yHeight));
-        setBackground(Color.yellow);
+        setLayout(new GridLayout(yHeight, xWidth));
+        //setBackground(Color.yellow);
         setBounds(20, 40, xWidth * 20, yHeight * 20); // xWidth and yHeight multiplied by 20 to fit in the 20px*20px squares.
 
         numberOfCells = xWidth*yHeight;
-        
+
         cellArray = new Cell[numberOfCells];
 
         for (int i=0; i < numberOfCells; i++) {
@@ -266,5 +270,6 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
         setForeground(Color.black);
         setFont(fallbackFont);
         setText(""+ID);
+
     } // end of constructor method "Cell"
 } // end of class "Cell" 
