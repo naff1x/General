@@ -30,13 +30,13 @@ import org.w3c.dom.css.RGBColor;
 
 public class Game {
 
-    // TODO: Resize "bombIcon.png" and make it fit inside the 20x20 cells
+    // TODO: Rename and resize "bombIcon.png" to "mineIcon" and make it fit inside the 20x20 cells
 
     private static final long serialVersionUID = 1L;
     private Game game;
     private JFrame gameFrame;
     /// Variables for reciving input from constructor method
-    private int bombs;
+    private int mines;
     private int frameWidth;
     private int frameHeight;
     private int squareWidth;
@@ -48,8 +48,8 @@ public class Game {
     /// Variables for class "Header"
     private Header topBar;
 
-    public Game(String nameFromInput, int widthFromInput, int heightFromInput, int bombsFromInput) {
-        bombs = bombsFromInput;
+    public Game(String nameFromInput, int widthFromInput, int heightFromInput, int minesFromInput) {
+        mines = minesFromInput;
         frameWidth = widthFromInput * 20 + 40;   // Multiplied by 20 to make room for the 20x20 cells that will make up the playing field
         frameHeight = heightFromInput * 20 + 80; // Plus 40 and 60 to add margin between the playing field and the border of the JFrame
         
@@ -69,7 +69,7 @@ public class Game {
         gameFrame.setSize(frameWidth, frameHeight);
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
-        System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
+        //System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
         
         /// Other methods and classes goes below
         addFonts();
@@ -80,9 +80,9 @@ public class Game {
         }
         gameFrame.add(topBar);
 
-        playground = new Board(widthFromInput, heightFromInput);
+        playground = new Board(widthFromInput, heightFromInput, minesFromInput);
         gameFrame.add(playground);
-        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
+        //System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
 
         // gameFrame.pack() doesn't work.
     } // end of contructor method "game"
@@ -126,7 +126,7 @@ class Header extends JPanel {
     public Header(int widthOfFrame, JFrame mainFrame) {
         frameHolder = mainFrame;
         barCoordinate = widthOfFrame/2 - 150;
-        output.println("Header starts at:" + barCoordinate);
+        //output.println("Header starts at:" + barCoordinate);
 
         //setBackground(Color.red);
         setBounds(barCoordinate, 7, 300, 30);
@@ -234,25 +234,27 @@ class Header extends JPanel {
 
 class Board extends JPanel { 
     private static final long serialVersionUID = 1L;
-    private int cellID;
-    private int numberOfCells;
-    private Cell[] cellArray;
+    //private int cellID;
+    //private int numberOfCells;
+    private Cell[][] cellMatrix;
 
-	public Board(int xWidth, int yHeight) {
+	public Board(int width, int height, int mines) {
 
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
 
-        setLayout(new GridLayout(yHeight, xWidth));
+        setLayout(new GridLayout(height, width));
         //setBackground(Color.yellow);
-        setBounds(20, 40, xWidth * 20, yHeight * 20); // xWidth and yHeight multiplied by 20 to fit in the 20px*20px squares.
+        setBounds(20, 40, width * 20, height * 20); // width and height multiplied by 20 to fit in the 20px*20px squares.
 
-        numberOfCells = xWidth*yHeight;
+        //numberOfCells = height*width;
 
-        cellArray = new Cell[numberOfCells];
+        cellMatrix = new Cell[height][width];
 
-        for (int i=0; i < numberOfCells; i++) {
-            cellArray[i] = new Cell(i);
-            add(cellArray[i]);
+        for (int y=0; y < height; y++) {
+            for (int x=0; x < width; x++) {
+                cellMatrix[y][x] = new Cell(mines);
+                add(cellMatrix[y][x]);
+            }
         }
         setVisible(true);
     } // end of constructor method "Board"
@@ -260,16 +262,52 @@ class Board extends JPanel {
 
 
 class Cell extends JButton { // TODO: Should implement an ActionListner for each cell to push the logic down the hierarchy as far as possible.
-    private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
+    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+    static PrintStream output = System.out;
 
-    public Cell(int ID) {
+    private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
+    private Boolean isClosed;
+    private Boolean hasMine;
+
+    public Cell(int mines) {
+        /// Frontend 
         setMinimumSize(new Dimension(20,20));;
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
-        //setIcon(new ImageIcon("UnopenedSquare.png"));
+        setIcon(new ImageIcon("UnopenedSquare.png"));
+        /*
         setForeground(Color.black);
         setFont(fallbackFont);
-        setText(""+ID);
+        setText("");
+        */
+        /// Backend
+        this.isClosed = true;
+        this.hasMine = false;
+        this.spawnMines(mines);
 
+        addActionListener(new ActionListener(){
+        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isClosed) {
+                    if (hasMine) {
+                        // You lose :)
+                        output.println("You lose");
+                    } else {
+                        openCell();
+                    }
+                }
+            }
+        });
     } // end of constructor method "Cell"
+
+    public void openCell() {
+        this.setIcon(new ImageIcon("OpenedSquare.png"));
+        this.isClosed = false;
+    }
+
+    public void spawnMines(int mines) {
+        //output.println("Mines: " + mines);
+        this.hasMine = true;
+    }
 } // end of class "Cell" 
