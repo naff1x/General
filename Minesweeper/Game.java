@@ -261,6 +261,10 @@ class Board extends JPanel {
             }
         }
 
+        if (mines > height*width) { // If the user entered more mines than field can fit, set to max amount of mines possible. 
+            mines = height*width;
+        }
+
         for (int i=0; i < mines; i++) {
             rngY = (int)(Math.random()* height); // Should return integer from 0 to the value of "height" (inclusive) 
             rngX = (int)(Math.random()* width);
