@@ -60,7 +60,7 @@ public class Game {
         gameFrame.setSize(frameWidth, frameHeight);
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
-        //System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
+        System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
         
         /// Other methods and classes goes below
         addFonts();
@@ -73,9 +73,7 @@ public class Game {
 
         playground = new Board(widthFromInput, heightFromInput, minesFromInput);
         gameFrame.add(playground);
-        //System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
-
-        // gameFrame.pack() doesn't work.
+        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -237,7 +235,7 @@ class Board extends JPanel {
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
 
         setLayout(new GridLayout(height, width));
-        //setBackground(Color.yellow);
+        //setBackground(Color.yellow); // Enable this line to show dimension of the JPanel "playground".
         setBounds(20, 40, width * 20, height * 20); // width and height multiplied by 20 to fit in the 20px*20px squares.
 
         //numberOfCells = height*width;
@@ -251,9 +249,11 @@ class Board extends JPanel {
             }
         }
 
-        for (int y=1; y < height; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
-            for (int x=1; x < width; x++) {  // The +2 previously added to "height" and "width" were removed to skip the first and last cells in the "cellMatrix".
+        for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
+            for (int x=1; x < width+1; x++) {  // +1 was added to both "height" and "width" to compensate for the +1 added to "y" and "x".
                 add(cellMatrix[y][x]);
+
+                output.println("y: " + y + " height: " + height + " x: " + x + " width: " + width);
             }
         }
 
@@ -296,7 +296,6 @@ class Cell extends JButton {
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
         setIcon(new ImageIcon("UnopenedSquare.png"));
-
         /// Backend
         this.isClosed = true;
         this.hasMine = false;
@@ -320,7 +319,8 @@ class Cell extends JButton {
     } // end of constructor method "Cell"
 
     public void openCell(int yPos, int xPos, Cell[][] theMatrix) { 
-        theMatrix[yPos][xPos].setIcon(new ImageIcon("OpenedSquare.png"));
+        theMatrix[yPos][xPos].setIcon(null);
+        //theMatrix[yPos][xPos].setText("0");
         theMatrix[yPos][xPos].isClosed = false;
         theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
     } // end of method "openCell"
