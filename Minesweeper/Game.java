@@ -234,8 +234,12 @@ class Header extends JPanel {
 
 class Board extends JPanel { 
     private static final long serialVersionUID = 1L;
+    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+    static PrintStream output = System.out;
     //private int cellID;
     //private int numberOfCells;
+    private int rngY;
+    private int rngX;
     private Cell[][] cellMatrix;
 
 	public Board(int width, int height, int mines) {
@@ -256,6 +260,24 @@ class Board extends JPanel {
                 add(cellMatrix[y][x]);
             }
         }
+
+        for (int i=0; i < mines; i++) {
+            rngY = (int)(Math.random()* height); // Should return integer from 0 to the value of "height" (inclusive) 
+            rngX = (int)(Math.random()* width);
+            output.println("rngY: " + rngY);
+            output.println("rngX: " + rngX);
+
+            if (cellMatrix[rngY][rngX].hasMineCheck()) {
+                output.println("Mine-spawning process 'i' at: " + i);
+                i--;
+                output.println("Mine-spawning process 'i' reduced to: " + i);
+            } else {
+                output.println("Mine-spawning process 'i' wasn't reduced, and is at: " + i);
+                cellMatrix[rngY][rngX].addMine();
+                output.println("Mine " + i + "added!");
+            }
+        }
+        repaint();
         setVisible(true);
     } // end of constructor method "Board"
 } // end of class "Board"
@@ -291,6 +313,7 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
                 if (isClosed) {
                     if (hasMine) {
                         // You lose :)
+                        // Set icon of selected cell (and all others) to mine.
                         output.println("You lose");
                     } else {
                         openCell();
@@ -300,9 +323,21 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
         });
     } // end of constructor method "Cell"
 
-    public void openCell() {
+    public void openCell() { 
         this.setIcon(new ImageIcon("OpenedSquare.png"));
         this.isClosed = false;
         this.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+    }
+
+    public void addMine() {
+        this.hasMine = true;
+    }
+
+    public Boolean hasMineCheck() {
+        if (this.hasMine) {
+            return true;
+        } else {
+            return false;
+        }
     }
 } // end of class "Cell" 
