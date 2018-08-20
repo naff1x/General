@@ -242,11 +242,17 @@ class Board extends JPanel {
 
         //numberOfCells = height*width;
 
-        cellMatrix = new Cell[height][width];
+        cellMatrix = new Cell[height+2][width+2]; // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
 
-        for (int y=0; y < height; y++) {
-            for (int x=0; x < width; x++) {
+        for (int y=0; y < height+2; y++) {      // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
+            for (int x=0; x < width+2; x++) {   // See previous comment :)
                 cellMatrix[y][x] = new Cell(y, x, cellMatrix);
+                // add(cellMatrix[y][x]); Had to move this line to another for-loop because only specific cells are to be added to the JPanel.
+            }
+        }
+
+        for (int y=1; y < height; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
+            for (int x=1; x < width; x++) {  // The +2 previously added to "height" and "width" were removed to skip the first and last cells in the "cellMatrix".
                 add(cellMatrix[y][x]);
             }
         }
@@ -256,8 +262,8 @@ class Board extends JPanel {
         }
 
         for (int i=0; i < mines; i++) {
-            rngY = (int)(Math.random()* height); // Should return integer from 0 to the value of "height" (inclusive) 
-            rngX = (int)(Math.random()* width);
+            rngY = (int)(Math.random()* height +1); // Should return integer from 1 to the value of "height" (inclusive) 
+            rngX = (int)(Math.random()* width +1);  // Here I add a 1 to skip any cells at [0][?] and [?][0] in the "cellMatrix"
             output.println("rngY: " + rngY);
             output.println("rngX: " + rngX);
 
@@ -275,7 +281,6 @@ class Board extends JPanel {
         setVisible(true);
     } // end of constructor method "Board"
 } // end of class "Board"
-
 
 class Cell extends JButton {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
