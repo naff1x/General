@@ -30,8 +30,6 @@ import org.w3c.dom.css.RGBColor;
 
 public class Game {
 
-    // TODO: Rename and resize "bombIcon.png" to "mineIcon" and make it fit inside the 20x20 cells
-
     private static final long serialVersionUID = 1L;
     private Game game;
     private JFrame gameFrame;
@@ -39,8 +37,7 @@ public class Game {
     private int mines;
     private int frameWidth;
     private int frameHeight;
-    private int squareWidth;
-    private int squareHeight;
+
     /// Fonts
     private Font pixelFont;
     /// Variables for class "Board"
@@ -52,12 +49,6 @@ public class Game {
         mines = minesFromInput;
         frameWidth = widthFromInput * 20 + 40;   // Multiplied by 20 to make room for the 20x20 cells that will make up the playing field
         frameHeight = heightFromInput * 20 + 80; // Plus 40 and 60 to add margin between the playing field and the border of the JFrame
-        
-        // These two integers contain the raw input from the user.
-        // In other words, the requested number of squares for width and height.
-        /* squareWidth = widthFromInput;
-        squareHeight = heightFromInput;
-        */
 
         gameFrame = new JFrame();
 
@@ -200,7 +191,6 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Restart button pressed!");
-                // TODO: Dipose the JFrame "gameFrame" (problem is that it is in another class) 
             }
         });
 
@@ -256,7 +246,7 @@ class Board extends JPanel {
 
         for (int y=0; y < height; y++) {
             for (int x=0; x < width; x++) {
-                cellMatrix[y][x] = new Cell(mines);
+                cellMatrix[y][x] = new Cell(y, x, cellMatrix);
                 add(cellMatrix[y][x]);
             }
         }
@@ -278,7 +268,7 @@ class Board extends JPanel {
             } else {
                 output.println("Mine-spawning process 'i' wasn't reduced, and is at: " + i);
                 cellMatrix[rngY][rngX].addMine();
-                output.println("Mine " + i + "added!");
+                output.println("Mine " + i + " added!");
             }
         }
         repaint();
@@ -287,7 +277,7 @@ class Board extends JPanel {
 } // end of class "Board"
 
 
-class Cell extends JButton { // TODO: Should implement an ActionListner for each cell to push the logic down the hierarchy as far as possible.
+class Cell extends JButton {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
 
@@ -295,17 +285,13 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
     private Boolean isClosed;
     private Boolean hasMine;
 
-    public Cell(int mines) {
+    public Cell(int yPos, int xPos, Cell[][] theMatrix) {
         /// Frontend 
         setMinimumSize(new Dimension(20,20));;
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
         setIcon(new ImageIcon("UnopenedSquare.png"));
-        /*
-        setForeground(Color.black);
-        setFont(fallbackFont);
-        setText("");
-        */
+
         /// Backend
         this.isClosed = true;
         this.hasMine = false;
@@ -316,32 +302,59 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
             public void actionPerformed(ActionEvent e) {
                 if (isClosed) {
                     if (hasMine) {
-                        // You lose :)
-                        // Set icon of selected cell (and all others) to mine.
+                        setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+                        setIcon(new ImageIcon("MineIcon.png"));
                         output.println("You lose");
                     } else {
-                        openCell();
+                        openCell(yPos, xPos, theMatrix);
+                        checkNeighbors(yPos, xPos, theMatrix);
                     }
                 }
             }
         });
     } // end of constructor method "Cell"
 
-    public void openCell() { 
-        this.setIcon(new ImageIcon("OpenedSquare.png"));
-        this.isClosed = false;
-        this.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-    }
+    public void openCell(int yPos, int xPos, Cell[][] theMatrix) { 
+        theMatrix[yPos][xPos].setIcon(new ImageIcon("OpenedSquare.png"));
+        theMatrix[yPos][xPos].isClosed = false;
+        theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+    } // end of method "openCell"
 
     public void addMine() {
         this.hasMine = true;
-    }
+    } // end of method "addMine"
 
     public Boolean hasMineCheck() {
         if (this.hasMine) {
             return true;
         } else {
             return false;
+        }
+    } // end of method "hasMineCheck"
+
+    public void checkNeighbors(int yPos, int xPos, Cell[][] theMatrix) {
+        if (theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed) {
+            theMatrix[yPos-1][xPos-1].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            theMatrix[yPos-1][xPos-1].setIcon(new ImageIcon("MineIcon.png"));
+            output.println("You lose");
+        } else if (!theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed) {
+            openCell(yPos-1, xPos-1, theMatrix);
+        }
+
+        if (theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed) {
+            theMatrix[yPos-1][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            theMatrix[yPos-1][xPos].setIcon(new ImageIcon("MineIcon.png"));
+            output.println("You lose");
+        } else if (!theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed) {
+            openCell(yPos-1, xPos, theMatrix);
+        }
+
+        if (theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed) {
+            theMatrix[yPos-1][xPos+1].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            theMatrix[yPos-1][xPos+1].setIcon(new ImageIcon("MineIcon.png"));
+            output.println("You lose");
+        } else if (!theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed) {
+            openCell(yPos-1, xPos+1, theMatrix);
         }
     }
 } // end of class "Cell" 
