@@ -283,7 +283,6 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
         /// Backend
         this.isClosed = true;
         this.hasMine = false;
-        this.spawnMines(mines);
 
         addActionListener(new ActionListener(){
         
@@ -304,10 +303,6 @@ class Cell extends JButton { // TODO: Should implement an ActionListner for each
     public void openCell() {
         this.setIcon(new ImageIcon("OpenedSquare.png"));
         this.isClosed = false;
-    }
-
-    public void spawnMines(int mines) {
-        //output.println("Mines: " + mines);
-        this.hasMine = true;
+        this.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
     }
 } // end of class "Cell" 
