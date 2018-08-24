@@ -289,6 +289,8 @@ class Cell extends JButton {
     private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
     private Boolean isClosed;
     private Boolean hasMine;
+    private int foundMines; // Used as the returned integer from method "checkNeighbors"
+    private int nearMines; 
 
     public Cell(int yPos, int xPos, Cell[][] theMatrix) {
         /// Frontend 
@@ -299,7 +301,7 @@ class Cell extends JButton {
         /// Backend
         this.isClosed = true;
         this.hasMine = false;
-
+        this.nearMines = 0;
         addActionListener(new ActionListener(){
         
             @Override
@@ -310,19 +312,25 @@ class Cell extends JButton {
                         setIcon(new ImageIcon("MineIcon.png"));
                         output.println("You lose");
                     } else {
-                        openCell(yPos, xPos, theMatrix);
-                        checkNeighbors(yPos, xPos, theMatrix);
+                        theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
+                        openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
+                        sweeperLoop(yPos, xPos, theMatrix);
                     }
                 }
             }
         });
     } // end of constructor method "Cell"
 
-    public void openCell(int yPos, int xPos, Cell[][] theMatrix) { 
-        theMatrix[yPos][xPos].setIcon(null);
-        //theMatrix[yPos][xPos].setText("0");
-        theMatrix[yPos][xPos].isClosed = false;
-        theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+    public void openCell(int yPos, int xPos, Cell[][] theMatrix, int surroundingMines) {
+        if (theMatrix[yPos][xPos].hasMine) {
+            theMatrix[yPos][xPos].setText(null);
+            output.println("A mine was about to be erased!");
+        } else {
+            theMatrix[yPos][xPos].setIcon(null);
+            theMatrix[yPos][xPos].isClosed = false;
+            theMatrix[yPos][xPos].setText(surroundingMines+"");
+            theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        }
     } // end of method "openCell"
 
     public void addMine() {
@@ -337,29 +345,105 @@ class Cell extends JButton {
         }
     } // end of method "hasMineCheck"
 
-    public void checkNeighbors(int yPos, int xPos, Cell[][] theMatrix) {
-        if (theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed) {
-            theMatrix[yPos-1][xPos-1].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-            theMatrix[yPos-1][xPos-1].setIcon(new ImageIcon("MineIcon.png"));
-            output.println("You lose");
-        } else if (!theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed) {
+    public int checkNeighbors(int yPos, int xPos, Cell[][] theMatrix) {
+
+        foundMines = 0;
+
+        /// Upper row
+
+        if (theMatrix[yPos-1][xPos-1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed && foundMines == 0) {
             openCell(yPos-1, xPos-1, theMatrix);
+            checkNeighbors(yPos-1, xPos-1, theMatrix);
         }
+        */
 
-        if (theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed) {
-            theMatrix[yPos-1][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-            theMatrix[yPos-1][xPos].setIcon(new ImageIcon("MineIcon.png"));
-            output.println("You lose");
-        } else if (!theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed) {
+        if (theMatrix[yPos-1][xPos].hasMine) {
+            foundMines++;
+            theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed && foundMines < 1) {
             openCell(yPos-1, xPos, theMatrix);
+            checkNeighbors(yPos-1, xPos, theMatrix);
         }
+        */
+        
+        // Removed " && theMatrix[yPos-1][xPos+1].isClosed"
 
-        if (theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed) {
-            theMatrix[yPos-1][xPos+1].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-            theMatrix[yPos-1][xPos+1].setIcon(new ImageIcon("MineIcon.png"));
-            output.println("You lose");
-        } else if (!theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed) {
+        if (theMatrix[yPos-1][xPos+1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed && foundMines < 1) {
             openCell(yPos-1, xPos+1, theMatrix);
+            checkNeighbors(yPos-1, xPos+1, theMatrix);
+        }
+        */
+
+        /// Middle row
+
+        if (theMatrix[yPos][xPos-1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos][xPos-1].hasMine && theMatrix[yPos][xPos-1].isClosed && foundMines < 1) {
+            openCell(yPos, xPos-1, theMatrix);
+            checkNeighbors(yPos, xPos-1, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos][xPos+1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos][xPos+1].hasMine && theMatrix[yPos][xPos+1].isClosed && foundMines < 1) {
+            openCell(yPos, xPos+1, theMatrix);
+            checkNeighbors(yPos, xPos+1, theMatrix);
+        }
+        */ 
+
+        /// Lower row 
+        
+        if (theMatrix[yPos+1][xPos-1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos+1][xPos-1].hasMine && theMatrix[yPos+1][xPos-1].isClosed && foundMines < 1) {
+            openCell(yPos+1, xPos-1, theMatrix);
+            checkNeighbors(yPos+1, xPos-1, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos+1][xPos].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos+1][xPos].hasMine && theMatrix[yPos+1][xPos].isClosed && foundMines < 1) {
+            openCell(yPos+1, xPos, theMatrix);
+            checkNeighbors(yPos+1, xPos, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos+1][xPos+1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos+1][xPos+1].hasMine && theMatrix[yPos+1][xPos+1].isClosed && foundMines < 1) {
+            openCell(yPos+1, xPos+1, theMatrix);
+            checkNeighbors(yPos+1, xPos+1, theMatrix);
+        }
+        */
+
+        return foundMines;
+    } // end of method "checkNeighbors"
+
+    public void sweeperLoop(int yPos, int xPos, Cell[][] theMatrix) {
+        if (theMatrix[yPos-1][xPos-1].isClosed & !hasMine) {
+            theMatrix[yPos-1][xPos-1].nearMines = checkNeighbors(yPos-1, xPos-1, theMatrix);
+            openCell(yPos-1, xPos-1, theMatrix, theMatrix[yPos-1][xPos-1].nearMines);
         }
     }
 } // end of class "Cell" 
