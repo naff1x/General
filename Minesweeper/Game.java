@@ -319,7 +319,9 @@ class Cell extends JButton {
                     } else {
                         theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
                         openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
-                        sweeperLoop(yPos, xPos, theMatrix);
+                        if (theMatrix[yPos][xPos].nearMines == 0) { // Only if the cell doesn't border any bombs will "sweeperLoop" be run.
+                            sweeperLoop(yPos, xPos, theMatrix);
+                        }
                     }
                 }
             }
