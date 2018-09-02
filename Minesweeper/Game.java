@@ -30,8 +30,6 @@ import org.w3c.dom.css.RGBColor;
 
 public class Game {
 
-    // TODO: Rename and resize "bombIcon.png" to "mineIcon" and make it fit inside the 20x20 cells
-
     private static final long serialVersionUID = 1L;
     private Game game;
     private JFrame gameFrame;
@@ -39,8 +37,7 @@ public class Game {
     private int mines;
     private int frameWidth;
     private int frameHeight;
-    private int squareWidth;
-    private int squareHeight;
+
     /// Fonts
     private Font pixelFont;
     /// Variables for class "Board"
@@ -52,12 +49,6 @@ public class Game {
         mines = minesFromInput;
         frameWidth = widthFromInput * 20 + 40;   // Multiplied by 20 to make room for the 20x20 cells that will make up the playing field
         frameHeight = heightFromInput * 20 + 80; // Plus 40 and 60 to add margin between the playing field and the border of the JFrame
-        
-        // These two integers contain the raw input from the user.
-        // In other words, the requested number of squares for width and height.
-        /* squareWidth = widthFromInput;
-        squareHeight = heightFromInput;
-        */
 
         gameFrame = new JFrame();
 
@@ -69,7 +60,7 @@ public class Game {
         gameFrame.setSize(frameWidth, frameHeight);
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setVisible(true);
-        //System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
+        System.out.println("frameWidth: " + frameWidth + " frameHeight: " + frameHeight);
         
         /// Other methods and classes goes below
         addFonts();
@@ -82,9 +73,7 @@ public class Game {
 
         playground = new Board(widthFromInput, heightFromInput, minesFromInput);
         gameFrame.add(playground);
-        //System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
-
-        // gameFrame.pack() doesn't work.
+        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -200,7 +189,6 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Restart button pressed!");
-                // TODO: Dipose the JFrame "gameFrame" (problem is that it is in another class) 
             }
         });
 
@@ -247,17 +235,25 @@ class Board extends JPanel {
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
 
         setLayout(new GridLayout(height, width));
-        //setBackground(Color.yellow);
+        //setBackground(Color.yellow); // Enable this line to show dimension of the JPanel "playground".
         setBounds(20, 40, width * 20, height * 20); // width and height multiplied by 20 to fit in the 20px*20px squares.
 
         //numberOfCells = height*width;
 
-        cellMatrix = new Cell[height][width];
+        cellMatrix = new Cell[height+2][width+2]; // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
 
-        for (int y=0; y < height; y++) {
-            for (int x=0; x < width; x++) {
-                cellMatrix[y][x] = new Cell(mines);
+        for (int y=0; y < height+2; y++) {      // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
+            for (int x=0; x < width+2; x++) {   // See previous comment :)
+                cellMatrix[y][x] = new Cell(y, x, cellMatrix);
+                // add(cellMatrix[y][x]); Had to move this line to another for-loop because only specific cells are to be added to the JPanel.
+            }
+        }
+
+        for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
+            for (int x=1; x < width+1; x++) {  // +1 was added to both "height" and "width" to compensate for the +1 added to "y" and "x".
                 add(cellMatrix[y][x]);
+
+                output.println("y: " + y + " height: " + height + " x: " + x + " width: " + width);
             }
         }
 
@@ -266,8 +262,8 @@ class Board extends JPanel {
         }
 
         for (int i=0; i < mines; i++) {
-            rngY = (int)(Math.random()* height); // Should return integer from 0 to the value of "height" (inclusive) 
-            rngX = (int)(Math.random()* width);
+            rngY = (int)(Math.random()* height +1); // Should return integer from 1 to the value of "height" (inclusive) 
+            rngX = (int)(Math.random()* width +1);  // Here I add a 1 to skip any cells at [0][?] and [?][0] in the "cellMatrix"
             output.println("rngY: " + rngY);
             output.println("rngX: " + rngX);
 
@@ -278,7 +274,7 @@ class Board extends JPanel {
             } else {
                 output.println("Mine-spawning process 'i' wasn't reduced, and is at: " + i);
                 cellMatrix[rngY][rngX].addMine();
-                output.println("Mine " + i + "added!");
+                output.println("Mine " + i + " added!");
             }
         }
         repaint();
@@ -286,62 +282,168 @@ class Board extends JPanel {
     } // end of constructor method "Board"
 } // end of class "Board"
 
-
-class Cell extends JButton { // TODO: Should implement an ActionListner for each cell to push the logic down the hierarchy as far as possible.
+class Cell extends JButton {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
 
     private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
     private Boolean isClosed;
     private Boolean hasMine;
+    private int foundMines; // Used as the returned integer from method "checkNeighbors"
+    private int nearMines; 
 
-    public Cell(int mines) {
+    public Cell(int yPos, int xPos, Cell[][] theMatrix) {
         /// Frontend 
         setMinimumSize(new Dimension(20,20));;
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
         setIcon(new ImageIcon("UnopenedSquare.png"));
-        /*
-        setForeground(Color.black);
-        setFont(fallbackFont);
-        setText("");
-        */
         /// Backend
         this.isClosed = true;
         this.hasMine = false;
-
+        this.nearMines = 0;
         addActionListener(new ActionListener(){
         
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isClosed) {
                     if (hasMine) {
-                        // You lose :)
-                        // Set icon of selected cell (and all others) to mine.
+                        setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+                        setIcon(new ImageIcon("MineIcon.png"));
                         output.println("You lose");
                     } else {
-                        openCell();
+                        theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
+                        openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
+                        sweeperLoop(yPos, xPos, theMatrix);
                     }
                 }
             }
         });
     } // end of constructor method "Cell"
 
-    public void openCell() { 
-        this.setIcon(new ImageIcon("OpenedSquare.png"));
-        this.isClosed = false;
-        this.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-    }
+    public void openCell(int yPos, int xPos, Cell[][] theMatrix, int surroundingMines) {
+        if (theMatrix[yPos][xPos].hasMine) {
+            theMatrix[yPos][xPos].setText(null);
+            output.println("A mine was about to be erased!");
+        } else {
+            theMatrix[yPos][xPos].setIcon(null);
+            theMatrix[yPos][xPos].isClosed = false;
+            theMatrix[yPos][xPos].setText(surroundingMines+"");
+            theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        }
+    } // end of method "openCell"
 
     public void addMine() {
         this.hasMine = true;
-    }
+    } // end of method "addMine"
 
     public Boolean hasMineCheck() {
         if (this.hasMine) {
             return true;
         } else {
             return false;
+        }
+    } // end of method "hasMineCheck"
+
+    public int checkNeighbors(int yPos, int xPos, Cell[][] theMatrix) {
+
+        foundMines = 0;
+
+        /// Upper row
+
+        if (theMatrix[yPos-1][xPos-1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed && foundMines == 0) {
+            openCell(yPos-1, xPos-1, theMatrix);
+            checkNeighbors(yPos-1, xPos-1, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos-1][xPos].hasMine) {
+            foundMines++;
+            theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed && foundMines < 1) {
+            openCell(yPos-1, xPos, theMatrix);
+            checkNeighbors(yPos-1, xPos, theMatrix);
+        }
+        */
+        
+        // Removed " && theMatrix[yPos-1][xPos+1].isClosed"
+
+        if (theMatrix[yPos-1][xPos+1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed && foundMines < 1) {
+            openCell(yPos-1, xPos+1, theMatrix);
+            checkNeighbors(yPos-1, xPos+1, theMatrix);
+        }
+        */
+
+        /// Middle row
+
+        if (theMatrix[yPos][xPos-1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos][xPos-1].hasMine && theMatrix[yPos][xPos-1].isClosed && foundMines < 1) {
+            openCell(yPos, xPos-1, theMatrix);
+            checkNeighbors(yPos, xPos-1, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos][xPos+1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos][xPos+1].hasMine && theMatrix[yPos][xPos+1].isClosed && foundMines < 1) {
+            openCell(yPos, xPos+1, theMatrix);
+            checkNeighbors(yPos, xPos+1, theMatrix);
+        }
+        */ 
+
+        /// Lower row 
+        
+        if (theMatrix[yPos+1][xPos-1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos+1][xPos-1].hasMine && theMatrix[yPos+1][xPos-1].isClosed && foundMines < 1) {
+            openCell(yPos+1, xPos-1, theMatrix);
+            checkNeighbors(yPos+1, xPos-1, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos+1][xPos].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos+1][xPos].hasMine && theMatrix[yPos+1][xPos].isClosed && foundMines < 1) {
+            openCell(yPos+1, xPos, theMatrix);
+            checkNeighbors(yPos+1, xPos, theMatrix);
+        }
+        */
+
+        if (theMatrix[yPos+1][xPos+1].hasMine) {
+            foundMines++;
+            //theMatrix[yPos][xPos].setText("" + foundMines);
+            output.println("There is a mine nearby!");
+        } /* else if (!theMatrix[yPos+1][xPos+1].hasMine && theMatrix[yPos+1][xPos+1].isClosed && foundMines < 1) {
+            openCell(yPos+1, xPos+1, theMatrix);
+            checkNeighbors(yPos+1, xPos+1, theMatrix);
+        }
+        */
+
+        return foundMines;
+    } // end of method "checkNeighbors"
+
+    public void sweeperLoop(int yPos, int xPos, Cell[][] theMatrix) {
+        if (theMatrix[yPos-1][xPos-1].isClosed & !hasMine) {
+            theMatrix[yPos-1][xPos-1].nearMines = checkNeighbors(yPos-1, xPos-1, theMatrix);
+            openCell(yPos-1, xPos-1, theMatrix, theMatrix[yPos-1][xPos-1].nearMines);
         }
     }
 } // end of class "Cell" 
