@@ -453,9 +453,12 @@ class Cell extends JButton {
     } // end of method "checkNeighbors"
 
     public void sweeperLoop(int yPos, int xPos, Cell[][] theMatrix) {
-        if (theMatrix[yPos-1][xPos-1].isClosed & !hasMine & isOpenable) {
+        if (theMatrix[yPos-1][xPos-1].isClosed & !theMatrix[yPos-1][xPos-1].hasMine & theMatrix[yPos-1][xPos-1].isOpenable) {
             theMatrix[yPos-1][xPos-1].nearMines = checkNeighbors(yPos-1, xPos-1, theMatrix);
             openCell(yPos-1, xPos-1, theMatrix, theMatrix[yPos-1][xPos-1].nearMines);
+            if (theMatrix[yPos-1][xPos-1].nearMines == 0) {
+                sweeperLoop(yPos-1, xPos-1, theMatrix);
+            }
         }
     }
 
