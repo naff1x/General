@@ -253,6 +253,7 @@ class Board extends JPanel {
         }
 
         for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
+            // TODO: Something seems very off about the these two. Think the "height" and "width" should be +2 not +1.
             for (int x=1; x < width+1; x++) {  // +1 was added to both "height" and "width" to compensate for the +1 added to "y" and "x".
                 add(cellMatrix[y][x]);
 
@@ -453,13 +454,65 @@ class Cell extends JButton {
     } // end of method "checkNeighbors"
 
     public void sweeperLoop(int yPos, int xPos, Cell[][] theMatrix) {
+
+        /// Upper row (3)
         if (theMatrix[yPos-1][xPos-1].isClosed & !theMatrix[yPos-1][xPos-1].hasMine & theMatrix[yPos-1][xPos-1].isOpenable) {
-            theMatrix[yPos-1][xPos-1].nearMines = checkNeighbors(yPos-1, xPos-1, theMatrix);
-            openCell(yPos-1, xPos-1, theMatrix, theMatrix[yPos-1][xPos-1].nearMines);
+            sweeperHelper(yPos-1, xPos-1, theMatrix);
             if (theMatrix[yPos-1][xPos-1].nearMines == 0) {
                 sweeperLoop(yPos-1, xPos-1, theMatrix);
             }
         }
+        if (theMatrix[yPos-1][xPos].isClosed & !theMatrix[yPos-1][xPos].hasMine & theMatrix[yPos-1][xPos].isOpenable) {
+            sweeperHelper(yPos-1, xPos, theMatrix);
+            if (theMatrix[yPos-1][xPos].nearMines == 0) {
+                sweeperLoop(yPos-1, xPos, theMatrix);
+            }
+        }
+        if (theMatrix[yPos-1][xPos+1].isClosed & !theMatrix[yPos-1][xPos+1].hasMine & theMatrix[yPos-1][xPos+1].isOpenable) {
+            sweeperHelper(yPos-1, xPos+1, theMatrix);
+            if (theMatrix[yPos-1][xPos+1].nearMines == 0) {
+                sweeperLoop(yPos-1, xPos+1, theMatrix);
+            }
+        }
+        /// Middle row (2)
+        if (theMatrix[yPos][xPos-1].isClosed & !theMatrix[yPos][xPos-1].hasMine & theMatrix[yPos][xPos-1].isOpenable) {
+            sweeperHelper(yPos, xPos-1, theMatrix);
+            if (theMatrix[yPos][xPos-1].nearMines == 0) {
+                sweeperLoop(yPos, xPos-1, theMatrix);
+            }
+        }
+        if (theMatrix[yPos][xPos+1].isClosed & !theMatrix[yPos][xPos+1].hasMine & theMatrix[yPos][xPos+1].isOpenable) {
+            sweeperHelper(yPos, xPos+1, theMatrix);
+            if (theMatrix[yPos][xPos+1].nearMines == 0) {
+                sweeperLoop(yPos, xPos+1, theMatrix);
+            }
+        }
+        /// Lower row (3)
+        if (theMatrix[yPos+1][xPos-1].isClosed & !theMatrix[yPos+1][xPos-1].hasMine & theMatrix[yPos+1][xPos-1].isOpenable) {
+            sweeperHelper(yPos+1, xPos-1, theMatrix);
+            if (theMatrix[yPos+1][xPos-1].nearMines == 0) {
+                sweeperLoop(yPos+1, xPos-1, theMatrix);
+            }
+        }
+        if (theMatrix[yPos+1][xPos].isClosed & !theMatrix[yPos+1][xPos].hasMine & theMatrix[yPos+1][xPos].isOpenable) {
+            sweeperHelper(yPos+1, xPos, theMatrix);
+            if (theMatrix[yPos+1][xPos].nearMines == 0) {
+                sweeperLoop(yPos+1, xPos, theMatrix);
+            }
+        }
+        if (theMatrix[yPos+1][xPos+1].isClosed & !theMatrix[yPos+1][xPos+1].hasMine & theMatrix[yPos+1][xPos+1].isOpenable) {
+            sweeperHelper(yPos+1, xPos+1, theMatrix);
+            if (theMatrix[yPos+1][xPos+1].nearMines == 0) {
+                sweeperLoop(yPos+1, xPos+1, theMatrix);
+            }
+        }
+
+        repaint();
+    } // end of method "sweeperLoop"
+
+    public void sweeperHelper(int yPos, int xPos, Cell[][] theMatrix) {
+        theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
+        openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
     }
 
     public void setNotOpenable() { // Used for setting invisible edge-cells' "isOpenable" variable to "false"-
