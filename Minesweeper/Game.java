@@ -325,6 +325,8 @@ class Cell extends JButton {
         if (theMatrix[yPos][xPos].hasMine) {
             theMatrix[yPos][xPos].setText(null);
             output.println("A mine was about to be erased!");
+        } else if (yPos == 0 | xPos == 0) {
+            theMatrix[yPos][xPos].setEnabled(false);
         } else {
             theMatrix[yPos][xPos].setIcon(null);
             theMatrix[yPos][xPos].isClosed = false;
@@ -380,7 +382,7 @@ class Cell extends JButton {
         } /* else if (!theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed && foundMines < 1) {
             openCell(yPos-1, xPos+1, theMatrix);
             checkNeighbors(yPos-1, xPos+1, theMatrix);
-        }
+        
         */
 
         /// Middle row
@@ -442,8 +444,16 @@ class Cell extends JButton {
 
     public void sweeperLoop(int yPos, int xPos, Cell[][] theMatrix) {
         if (theMatrix[yPos-1][xPos-1].isClosed & !hasMine) {
-            theMatrix[yPos-1][xPos-1].nearMines = checkNeighbors(yPos-1, xPos-1, theMatrix);
-            openCell(yPos-1, xPos-1, theMatrix, theMatrix[yPos-1][xPos-1].nearMines);
+            if (yPos < 0 | xPos < 0) {
+                theMatrix[yPos-1][xPos-1].setEnabled(false);
+            } else {
+                theMatrix[yPos-1][xPos-1].nearMines = checkNeighbors(yPos-1, xPos-1, theMatrix);
+                openCell(yPos-1, xPos-1, theMatrix, theMatrix[yPos-1][xPos-1].nearMines);
+            }
         }
-    }
+    } 
+
+    
 } // end of class "Cell" 
+
+// TODO: Fix "ArrayIndexOutOfBoundsException". Occurs whenever a mine outside the JPanel is "checked", is it connected to the "cellMatrix"?
