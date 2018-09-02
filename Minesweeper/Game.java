@@ -330,6 +330,8 @@ class Cell extends JButton {
         if (theMatrix[yPos][xPos].hasMine) {
             theMatrix[yPos][xPos].setText(null);
             output.println("A mine was about to be erased!");
+        } else if (yPos == 0 | xPos == 0) {
+            theMatrix[yPos][xPos].setEnabled(false);
         } else {
             theMatrix[yPos][xPos].setIcon(null);
             theMatrix[yPos][xPos].isClosed = false;
