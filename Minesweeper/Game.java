@@ -65,9 +65,9 @@ public class Game {
         /// Other methods and classes goes below
         addFonts();
         if (frameWidth > 340) {
-            topBar = new Header(frameWidth, gameFrame);
+            topBar = new Header(frameWidth, gameFrame, widthFromInput, heightFromInput, minesFromInput);
         } else {
-            topBar = new Header(340, gameFrame);
+            topBar = new Header(340, gameFrame, widthFromInput, heightFromInput, minesFromInput);
         }
         gameFrame.add(topBar);
 
@@ -105,6 +105,7 @@ class Header extends JPanel {
     static PrintStream output = System.out;
     private MainMenu menu;
     private JFrame frameHolder;
+    private Game gameHolder;
     /// Fonts
     private Font pixelFont;
     /// Colors
@@ -112,7 +113,7 @@ class Header extends JPanel {
     private Color darkerWhite = new Color(240,240,240);
     private Color regularGray = new Color(190, 190, 190);
 
-    public Header(int widthOfFrame, JFrame mainFrame) {
+    public Header(int widthOfFrame, JFrame mainFrame, int widthForNewGame, int heightForNewGame, int minesForNewGame) {
         frameHolder = mainFrame;
         barCoordinate = widthOfFrame/2 - 150;
         //output.println("Header starts at:" + barCoordinate);
@@ -121,19 +122,19 @@ class Header extends JPanel {
         setBounds(barCoordinate, 7, 300, 30);
         setLayout(new FlowLayout(FlowLayout.CENTER,0, -6));
         addFonts();
-        addComponents();
+        addComponents(widthForNewGame, heightForNewGame, minesForNewGame);
         repaint();
         setVisible(true);
 
     } // end of constructor method "Header"
 
-    public void addComponents() {
+    public void addComponents(int widthForNewGame, int heightForNewGame, int minesForNewGame) {
         
         componentDimension = new Dimension(64, 30);
 
         addScoreLabel();
         addMenuButton();
-        addRestartButton();
+        addRestartButton(widthForNewGame, heightForNewGame, minesForNewGame);
         addTimeLabel();
     } // end of method "addComponents"
 
@@ -173,7 +174,7 @@ class Header extends JPanel {
         add(menuButton);
     } // end of method "addMenuButton"
 
-    public void addRestartButton() {
+    public void addRestartButton(int widthForNewGame, int heightForNewGame, int minesForNewGame) {
         restartButton = new JButton(new ImageIcon("Restart.png"));
         restartButton.setContentAreaFilled(true);
         restartButton.setBorderPainted(true);
@@ -189,6 +190,8 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Restart button pressed!");
+                frameHolder.dispose();
+                gameHolder = new Game("Minesweeper", widthForNewGame, heightForNewGame, minesForNewGame);
             }
         });
 
