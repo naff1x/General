@@ -224,21 +224,17 @@ class Board extends JPanel {
     private static final long serialVersionUID = 1L;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
-    //private int cellID;
-    //private int numberOfCells;
     private int rngY;
     private int rngX;
     private Cell[][] cellMatrix;
 
 	public Board(int width, int height, int mines) {
 
-        // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
+        // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 14 or lower. 
 
         setLayout(new GridLayout(height, width));
-        setBackground(Color.yellow); // Enable this line to show dimension of the JPanel "playground".
+        //setBackground(Color.yellow); // Enable this line to show dimension of the JPanel "playground".
         setBounds(20, 40, width * 20, height * 20); // width and height multiplied by 20 to fit in the 20px*20px squares.
-
-        //numberOfCells = height*width;
 
         cellMatrix = new Cell[height+2][width+2]; // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
 
@@ -249,7 +245,6 @@ class Board extends JPanel {
                     cellMatrix[y][x].setNotOpenable();
                     output.println("<<< Y: " + y + " X: " + x + " has a 0!");
                 }
-                // add(cellMatrix[y][x]); Had to move this line to another for-loop because only specific cells are to be added to the JPanel.
             }
         }
 
@@ -365,89 +360,47 @@ class Cell extends JButton {
 
             if (theMatrix[yPos-1][xPos-1].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos-1][xPos-1].hasMine && theMatrix[yPos-1][xPos-1].isClosed && foundMines == 0) {
-                openCell(yPos-1, xPos-1, theMatrix);
-                checkNeighbors(yPos-1, xPos-1, theMatrix);
             }
-            */
 
             if (theMatrix[yPos-1][xPos].hasMine) {
                 foundMines++;
-                theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos-1][xPos].hasMine && theMatrix[yPos-1][xPos].isClosed && foundMines < 1) {
-                openCell(yPos-1, xPos, theMatrix);
-                checkNeighbors(yPos-1, xPos, theMatrix);
             }
-            */
-            
-            // Removed " && theMatrix[yPos-1][xPos+1].isClosed"
 
             if (theMatrix[yPos-1][xPos+1].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos-1][xPos+1].hasMine && theMatrix[yPos-1][xPos+1].isClosed && foundMines < 1) {
-                openCell(yPos-1, xPos+1, theMatrix);
-                checkNeighbors(yPos-1, xPos+1, theMatrix);
             }
-            */
 
             /// Middle row
 
             if (theMatrix[yPos][xPos-1].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos][xPos-1].hasMine && theMatrix[yPos][xPos-1].isClosed && foundMines < 1) {
-                openCell(yPos, xPos-1, theMatrix);
-                checkNeighbors(yPos, xPos-1, theMatrix);
             }
-            */
 
             if (theMatrix[yPos][xPos+1].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos][xPos+1].hasMine && theMatrix[yPos][xPos+1].isClosed && foundMines < 1) {
-                openCell(yPos, xPos+1, theMatrix);
-                checkNeighbors(yPos, xPos+1, theMatrix);
             }
-            */ 
 
             /// Lower row 
             
             if (theMatrix[yPos+1][xPos-1].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos+1][xPos-1].hasMine && theMatrix[yPos+1][xPos-1].isClosed && foundMines < 1) {
-                openCell(yPos+1, xPos-1, theMatrix);
-                checkNeighbors(yPos+1, xPos-1, theMatrix);
             }
-            */
 
             if (theMatrix[yPos+1][xPos].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos+1][xPos].hasMine && theMatrix[yPos+1][xPos].isClosed && foundMines < 1) {
-                openCell(yPos+1, xPos, theMatrix);
-                checkNeighbors(yPos+1, xPos, theMatrix);
             }
-            */
 
             if (theMatrix[yPos+1][xPos+1].hasMine) {
                 foundMines++;
-                //theMatrix[yPos][xPos].setText("" + foundMines);
                 output.println("There is a mine nearby!");
-            } /* else if (!theMatrix[yPos+1][xPos+1].hasMine && theMatrix[yPos+1][xPos+1].isClosed && foundMines < 1) {
-                openCell(yPos+1, xPos+1, theMatrix);
-                checkNeighbors(yPos+1, xPos+1, theMatrix);
             }
-            */
         } else { // This else-part combined with the PrintStream stops the program from generating an "ArrayIndexOutOfBoundsException".
             output.println("<<< At method 'checkNeighbors', the main if-statement was bypassed and 'else' was used. >>>");
         }
@@ -509,7 +462,7 @@ class Cell extends JButton {
         }
     } // end of method "sweeperLoop"
 
-    public void sweeperHelper(int yPos, int xPos, Cell[][] theMatrix) {
+    public void sweeperHelper(int yPos, int xPos, Cell[][] theMatrix) { // Used for the method "sweeperLoop" in order to reduce clutter.
         theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
         openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
     }
