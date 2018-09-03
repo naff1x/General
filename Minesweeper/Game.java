@@ -235,7 +235,7 @@ class Board extends JPanel {
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 7 or lower. 
 
         setLayout(new GridLayout(height, width));
-        //setBackground(Color.yellow); // Enable this line to show dimension of the JPanel "playground".
+        setBackground(Color.yellow); // Enable this line to show dimension of the JPanel "playground".
         setBounds(20, 40, width * 20, height * 20); // width and height multiplied by 20 to fit in the 20px*20px squares.
 
         //numberOfCells = height*width;
@@ -245,16 +245,16 @@ class Board extends JPanel {
         for (int y=0; y < height+2; y++) {      // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
             for (int x=0; x < width+2; x++) {   // See previous comment :)
                 cellMatrix[y][x] = new Cell(y, x, cellMatrix);
-                if (y == 0 | x == 0) { // if this cell is located outside of the JPanel (has a 0 in its x/y positioning) then modify variable.
+                if (y == 0 | x == 0 | x == width+1 | y == height+1) { // if this cell is located outside of the JPanel, then modify variable.
                     cellMatrix[y][x].setNotOpenable();
+                    output.println("<<< Y: " + y + " X: " + x + " has a 0!");
                 }
                 // add(cellMatrix[y][x]); Had to move this line to another for-loop because only specific cells are to be added to the JPanel.
             }
         }
 
-        for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
-            // TODO: Something seems very off about the these two. Think the "height" and "width" should be +2 not +1.
-            for (int x=1; x < width+1; x++) {  // +1 was added to both "height" and "width" to compensate for the +1 added to "y" and "x".
+        for (int y=1; y < height; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
+            for (int x=1; x < width; x++) { 
                 add(cellMatrix[y][x]);
 
                 output.println("y: " + y + " height: " + height + " x: " + x + " width: " + width);
@@ -335,6 +335,7 @@ class Cell extends JButton {
             output.println("A mine was about to be erased!");
         } else if (yPos == 0 | xPos == 0) {
             theMatrix[yPos][xPos].setEnabled(false);
+            theMatrix[yPos][xPos].isOpenable = false;
         } else {
             theMatrix[yPos][xPos].setIcon(null);
             theMatrix[yPos][xPos].isClosed = false;
@@ -506,8 +507,6 @@ class Cell extends JButton {
                 sweeperLoop(yPos+1, xPos+1, theMatrix);
             }
         }
-
-        repaint();
     } // end of method "sweeperLoop"
 
     public void sweeperHelper(int yPos, int xPos, Cell[][] theMatrix) {
