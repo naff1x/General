@@ -253,8 +253,8 @@ class Board extends JPanel {
             }
         }
 
-        for (int y=1; y < height; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
-            for (int x=1; x < width; x++) { 
+        for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
+            for (int x=1; x < width+1; x++) {  // Removing the +1(s) here breaks the layout because a cell on both axies is removed.
                 add(cellMatrix[y][x]);
 
                 output.println("y: " + y + " height: " + height + " x: " + x + " width: " + width);
