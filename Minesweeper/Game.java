@@ -25,6 +25,7 @@ import javax.swing.JOptionPane.*;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 
 import org.w3c.dom.css.RGBColor;
 
@@ -106,6 +107,9 @@ class Header extends JPanel {
     private MainMenu menu;
     private JFrame frameHolder;
     private Game gameHolder;
+    /// For clock
+    private Timer refreshTimer; // Used for refreshing the counter every 1 second
+    private int timeKeeper;
     /// Fonts
     private Font pixelFont;
     /// Colors
@@ -199,7 +203,10 @@ class Header extends JPanel {
     } // end of method "addRestartButton"
 
     public void addTimeLabel() {
-        timeLabel = new JLabel("0000", SwingConstants.CENTER);
+
+        timeKeeper = 0;
+
+        timeLabel = new JLabel("0", SwingConstants.CENTER);
         timeLabel.setFont(pixelFont);
         timeLabel.setForeground(darkerWhite);
         timeLabel.setMinimumSize(componentDimension);
@@ -207,6 +214,19 @@ class Header extends JPanel {
         timeLabel.setMaximumSize(componentDimension);
         timeLabel.setOpaque(true);
         timeLabel.setBackground(darkerGray);
+
+        Timer refreshTimer = new Timer(1000, new ActionListener(){
+        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timeKeeper++;
+                output.println("<<< Time at: " + timeKeeper);
+                timeLabel.setText(""+timeKeeper);
+            }
+        });
+        refreshTimer.setRepeats(true);
+        refreshTimer.start();
+
         add(timeLabel);
     } // end of method "addTimeLabel"
 
@@ -474,32 +494,3 @@ class Cell extends JButton {
         this.isOpenable = false;
     }
 } // end of class "Cell" 
-
-class Timer {
-    private long counter;
-
-    public Timer() {
-        this.counter = 0;
-    } // end of constructor method "Timer"
-
-    public void startTimer() {
-        this.counter = System.nanoTime();
-    } // end of method "startTimer"
-
-    public void stopTimer() {
-        this.counter = System.nanoTime() - counter;
-    } // end of method "stopTimer"
-
-    public void resetTimer() {
-        this.counter = 0;
-    } // end of method "resetTimer" 
-
-    public long getTime() {
-        return counter;
-    } // end of method "getTime"
-
-    public String toString() {
-        String timerInString = ""+this.counter / 1000000000;
-        return timerInString;
-    } // end of method "toString"
-} // end of class "Timer"
