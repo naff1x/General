@@ -474,3 +474,32 @@ class Cell extends JButton {
         this.isOpenable = false;
     }
 } // end of class "Cell" 
+
+class Timer {
+    private long counter;
+
+    public Timer() {
+        this.counter = 0;
+    } // end of constructor method "Timer"
+
+    public void startTimer() {
+        this.counter = System.nanoTime();
+    } // end of method "startTimer"
+
+    public void stopTimer() {
+        this.counter = System.nanoTime() - counter;
+    } // end of method "stopTimer"
+
+    public void resetTimer() {
+        this.counter = 0;
+    } // end of method "resetTimer" 
+
+    public long getTime() {
+        return counter;
+    } // end of method "getTime"
+
+    public String toString() {
+        String timerInString = ""+this.counter / 1000000000;
+        return timerInString;
+    } // end of method "toString"
+} // end of class "Timer"
