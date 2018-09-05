@@ -327,6 +327,8 @@ class Cell extends JButton {
         setMaximumSize(new Dimension(20,20));
         setIcon(new ImageIcon("UnopenedSquare.png"));
         /// Backend
+        cellsOpened = 0;
+
         this.isOpenable = true;
         this.isClosed = true;
         this.hasMine = false;
