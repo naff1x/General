@@ -49,7 +49,7 @@ public class Game {
     public Game(String nameFromInput, int widthFromInput, int heightFromInput, int minesFromInput) {
         mines = minesFromInput;
         frameWidth = widthFromInput * 20 + 40;   // Multiplied by 20 to make room for the 20x20 cells that will make up the playing field
-        frameHeight = heightFromInput * 20 + 80; // Plus 40 and 60 to add margin between the playing field and the border of the JFrame
+        frameHeight = heightFromInput * 20 + 80; // Plus 40 and 80 to add margin between the playing field and the border of the JFrame
 
         gameFrame = new JFrame();
 
@@ -65,16 +65,17 @@ public class Game {
         
         /// Other methods and classes goes below
         addFonts();
+
+        playground = new Board(widthFromInput, heightFromInput, minesFromInput);
+        gameFrame.add(playground);
+        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
+
         if (frameWidth > 340) {
             topBar = new Header(frameWidth, gameFrame, widthFromInput, heightFromInput, minesFromInput);
         } else {
             topBar = new Header(340, gameFrame, widthFromInput, heightFromInput, minesFromInput);
         }
         gameFrame.add(topBar);
-
-        playground = new Board(widthFromInput, heightFromInput, minesFromInput);
-        gameFrame.add(playground);
-        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -137,13 +138,13 @@ class Header extends JPanel {
         componentDimension = new Dimension(64, 30);
 
         addScoreLabel();
-        addMenuButton();
+        addMenuButton(); 
         addRestartButton(widthForNewGame, heightForNewGame, minesForNewGame);
         addTimeLabel();
     } // end of method "addComponents"
 
     public void addScoreLabel() {
-        scoreLabel = new JLabel("0000", SwingConstants.CENTER);
+        scoreLabel = new JLabel("0", SwingConstants.CENTER);
         scoreLabel.setFont(pixelFont);
         scoreLabel.setForeground(darkerWhite);
         scoreLabel.setMinimumSize(componentDimension);
@@ -170,6 +171,7 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Menu button pressed!");
+                refreshTimer.stop();
                 frameHolder.dispose();
                 menu = new MainMenu("Main Menu");
             }
@@ -194,6 +196,7 @@ class Header extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 output.println("Restart button pressed!");
+                refreshTimer.stop();
                 frameHolder.dispose();
                 gameHolder = new Game("Minesweeper", widthForNewGame, heightForNewGame, minesForNewGame);
             }
@@ -215,12 +218,12 @@ class Header extends JPanel {
         timeLabel.setOpaque(true);
         timeLabel.setBackground(darkerGray);
 
-        Timer refreshTimer = new Timer(1000, new ActionListener(){
+        refreshTimer = new Timer(1000, new ActionListener(){
         
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeKeeper++;
-                output.println("<<< Time at: " + timeKeeper);
+                //output.println("<<< Time at: " + timeKeeper);
                 timeLabel.setText(""+timeKeeper);
             }
         });
@@ -241,6 +244,7 @@ class Header extends JPanel {
             e.printStackTrace();
         }
     } // end of method "addFonts"
+
 } // end of class "Header"
 
 class Board extends JPanel { 
@@ -307,13 +311,14 @@ class Board extends JPanel {
 class Cell extends JButton {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
+    static int cellsOpened;
 
     private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
     private Boolean isClosed;
     private Boolean hasMine;
     private Boolean isOpenable; // Default set to "true", but for the invisible edge-cells, this should be set to "false".
     private int foundMines; // Used as the returned integer from method "checkNeighbors"
-    private int nearMines; 
+    private int nearMines;
 
     public Cell(int yPos, int xPos, Cell[][] theMatrix) {
         /// Frontend 
@@ -359,6 +364,8 @@ class Cell extends JButton {
             theMatrix[yPos][xPos].isClosed = false;
             theMatrix[yPos][xPos].setText(surroundingMines+"");
             theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            cellsOpened++;
+            output.println("<<< Number of cells opened: " + cellsOpened);
         }
     } // end of method "openCell"
 
@@ -488,9 +495,9 @@ class Cell extends JButton {
     public void sweeperHelper(int yPos, int xPos, Cell[][] theMatrix) { // Used for the method "sweeperLoop" in order to reduce clutter.
         theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
         openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
-    }
+    } // end of method "sweeperHelper"
 
     public void setNotOpenable() { // Used for setting invisible edge-cells' "isOpenable" variable to "false"-
         this.isOpenable = false;
-    }
+    } // end of method "setNotOpenable"
 } // end of class "Cell" 
