@@ -66,16 +66,16 @@ public class Game {
         /// Other methods and classes goes below
         addFonts();
 
-        playground = new Board(widthFromInput, heightFromInput, minesFromInput);
-        gameFrame.add(playground);
-        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
-
         if (frameWidth > 340) {
             topBar = new Header(frameWidth, gameFrame, widthFromInput, heightFromInput, minesFromInput);
         } else {
             topBar = new Header(340, gameFrame, widthFromInput, heightFromInput, minesFromInput);
         }
         gameFrame.add(topBar);
+
+        playground = new Board(widthFromInput, heightFromInput, minesFromInput, topBar.returnScoreLabel());
+        gameFrame.add(playground);
+        System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -245,6 +245,9 @@ class Header extends JPanel {
         }
     } // end of method "addFonts"
 
+    public JLabel returnScoreLabel() {
+        return scoreLabel;
+    } // end of method "returnScoreLabel"
 } // end of class "Header"
 
 class Board extends JPanel { 
@@ -255,7 +258,7 @@ class Board extends JPanel {
     private int rngX;
     private Cell[][] cellMatrix;
 
-	public Board(int width, int height, int mines) {
+	public Board(int width, int height, int mines, JLabel labelFromInput) {
 
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 14 or lower. 
 
@@ -267,7 +270,7 @@ class Board extends JPanel {
 
         for (int y=0; y < height+2; y++) {      // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
             for (int x=0; x < width+2; x++) {   // See previous comment :)
-                cellMatrix[y][x] = new Cell(y, x, cellMatrix);
+                cellMatrix[y][x] = new Cell(y, x, cellMatrix, labelFromInput);
                 if (y == 0 | x == 0 | x == width+1 | y == height+1) { // if this cell is located outside of the JPanel, then modify variable.
                     cellMatrix[y][x].setNotOpenable();
                     output.println("<<< Y: " + y + " X: " + x + " has a 0!");
@@ -278,7 +281,7 @@ class Board extends JPanel {
         for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
             for (int x=1; x < width+1; x++) {  // Removing the +1(s) here breaks the layout because a cell on both axies is removed.
                 add(cellMatrix[y][x]);
-
+                cellMatrix[y][x].increaseNonMines(); // This sets "Cell (class)" variable "nonMines" to the number of cells created. This is corrected in Cell.addMine() however.
                 output.println("y: " + y + " height: " + height + " x: " + x + " width: " + width);
             }
         }
@@ -312,6 +315,8 @@ class Cell extends JButton {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     static int cellsOpened;
+    private JLabel scoreLabel; // Stores the "labelFromInput"
+    static int nonMines; // Used for storing number of cells that don't have mines.
 
     private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
     private Boolean isClosed;
@@ -320,13 +325,14 @@ class Cell extends JButton {
     private int foundMines; // Used as the returned integer from method "checkNeighbors"
     private int nearMines;
 
-    public Cell(int yPos, int xPos, Cell[][] theMatrix) {
+    public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel labelFromInput) {
         /// Frontend 
         setMinimumSize(new Dimension(20,20));;
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
         setIcon(new ImageIcon("UnopenedSquare.png"));
         /// Backend
+        scoreLabel = labelFromInput;
         cellsOpened = 0;
 
         this.isOpenable = true;
@@ -368,11 +374,15 @@ class Cell extends JButton {
             theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
             cellsOpened++;
             output.println("<<< Number of cells opened: " + cellsOpened);
+            output.println("<<< Number of cells left: " + (nonMines-cellsOpened));
+            scoreLabel.setText(""+ (nonMines-cellsOpened));
         }
+        output.println(">>> NonMines at: "+nonMines);
     } // end of method "openCell"
 
     public void addMine() {
         this.hasMine = true;
+        nonMines--; // Without running this, "nonMines" will be set to the total number of cells. This corrects it.
     } // end of method "addMine"
 
     public Boolean hasMineCheck() {
@@ -502,4 +512,8 @@ class Cell extends JButton {
     public void setNotOpenable() { // Used for setting invisible edge-cells' "isOpenable" variable to "false"-
         this.isOpenable = false;
     } // end of method "setNotOpenable"
+
+    public void increaseNonMines() {
+        nonMines++;
+    } // end of method "increaseNonMines"
 } // end of class "Cell" 
