@@ -26,7 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
-
+import javax.swing.UIManager;
 import org.w3c.dom.css.RGBColor;
 
 public class Game {
@@ -73,7 +73,7 @@ public class Game {
         }
         gameFrame.add(topBar);
 
-        playground = new Board(widthFromInput, heightFromInput, minesFromInput, topBar.returnScoreLabel());
+        playground = new Board(widthFromInput, heightFromInput, minesFromInput, topBar.returnScoreLabel(), topBar.returnTimeLabel(), topBar.returnRefreshTimer());
         gameFrame.add(playground);
         System.out.println("Playground width: " + playground.getWidth() + " height: " + playground.getHeight() );
     } // end of contructor method "game"
@@ -248,6 +248,14 @@ class Header extends JPanel {
     public JLabel returnScoreLabel() {
         return scoreLabel;
     } // end of method "returnScoreLabel"
+
+    public JLabel returnTimeLabel() {
+        return timeLabel;
+    } // end of method "returnTimeLabel"
+
+    public Timer returnRefreshTimer() {
+        return refreshTimer;
+    } // end of method "returnRefreshTimer"
 } // end of class "Header"
 
 class Board extends JPanel { 
@@ -258,7 +266,7 @@ class Board extends JPanel {
     private int rngX;
     private Cell[][] cellMatrix;
 
-	public Board(int width, int height, int mines, JLabel labelFromInput) {
+	public Board(int width, int height, int mines, JLabel scoreLabelFromInput, JLabel timeLabelFromInput, Timer timerFromInput) {
 
         // TODO: Issue: The absolute positioning of the panel stops working when the user enters a 14 or lower. 
 
@@ -270,7 +278,7 @@ class Board extends JPanel {
 
         for (int y=0; y < height+2; y++) {      // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
             for (int x=0; x < width+2; x++) {   // See previous comment :)
-                cellMatrix[y][x] = new Cell(y, x, cellMatrix, labelFromInput);
+                cellMatrix[y][x] = new Cell(y, x, cellMatrix, scoreLabelFromInput, timeLabelFromInput, timerFromInput);
                 cellMatrix[y][x].resetNonMines();
                 if (y == 0 | x == 0 | x == width+1 | y == height+1) { // if this cell is located outside of the JPanel, then modify variable.
                     cellMatrix[y][x].setNotOpenable();
@@ -313,10 +321,13 @@ class Board extends JPanel {
 } // end of class "Board"
 
 class Cell extends JButton {
+    private static final long serialVersionUID = 1L;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     static int cellsOpened;
-    private JLabel scoreLabel; // Stores the "labelFromInput"
+    private JLabel scoreLabel; // Stores the "scoreLabelFromInput"
+    private JLabel timeLabel; // Stores the "timeLabelFromInput"
+    private Timer refreshTimer; // Stores the "timerFromInput"
     static int nonMines; // Used for storing number of cells that don't have mines.
 
     private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 8);
@@ -326,14 +337,16 @@ class Cell extends JButton {
     private int foundMines; // Used as the returned integer from method "checkNeighbors"
     private int nearMines;
 
-    public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel labelFromInput) {
+    public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel scoreLabelFromInput, JLabel timeLabelFromInput, Timer timerFromInput) {
         /// Frontend 
         setMinimumSize(new Dimension(20,20));;
         setPreferredSize(new Dimension(20,20));
         setMaximumSize(new Dimension(20,20));
         setIcon(new ImageIcon("UnopenedSquare.png"));
         /// Backend
-        scoreLabel = labelFromInput;
+        scoreLabel = scoreLabelFromInput;
+        timeLabel = timeLabelFromInput;
+        refreshTimer = timerFromInput;
         cellsOpened = 0;
 
         this.isOpenable = true;
@@ -377,8 +390,12 @@ class Cell extends JButton {
             output.println("<<< Number of cells opened: " + cellsOpened);
             output.println("<<< Number of cells left: " + (nonMines-cellsOpened));
             scoreLabel.setText(""+ (nonMines-cellsOpened));
+            
+            if (cellsOpened == nonMines) { // If all non-mine-cells have been cleared...
+                // VICTORY!
+                toVictory();
+            }
         }
-        output.println(">>> NonMines at: "+nonMines);
     } // end of method "openCell"
 
     public void addMine() {
@@ -526,4 +543,11 @@ class Cell extends JButton {
     public void resetNonMines() { // Resets variable "nonMines" to 0. Restarting without running this will result in an incorrect value.
         nonMines = 0;
     } // end of method "resetNonMines"
+
+    public void toVictory() { // Method that is run after winning the game.
+        refreshTimer.stop();
+        output.println("<==> Congratulations, you've won!");
+        output.println("<==> It took: " + timeLabel.getText() + " seconds!");
+        output.println("<==> You cleared: " + cellsOpened + " squares!");
+    }
 } // end of class "Cell" 
