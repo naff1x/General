@@ -271,6 +271,7 @@ class Board extends JPanel {
         for (int y=0; y < height+2; y++) {      // Adding 2 rows and 2 cols in order to make buffer around the actual playing field.
             for (int x=0; x < width+2; x++) {   // See previous comment :)
                 cellMatrix[y][x] = new Cell(y, x, cellMatrix, labelFromInput);
+                cellMatrix[y][x].resetNonMines();
                 if (y == 0 | x == 0 | x == width+1 | y == height+1) { // if this cell is located outside of the JPanel, then modify variable.
                     cellMatrix[y][x].setNotOpenable();
                     output.println("<<< Y: " + y + " X: " + x + " has a 0!");
@@ -281,7 +282,7 @@ class Board extends JPanel {
         for (int y=1; y < height+1; y++) {     // integers "y" and "x" set to 1 because the cells at [0][0] are not to be added to the Panel. 
             for (int x=1; x < width+1; x++) {  // Removing the +1(s) here breaks the layout because a cell on both axies is removed.
                 add(cellMatrix[y][x]);
-                cellMatrix[y][x].increaseNonMines(); // This sets "Cell (class)" variable "nonMines" to the number of cells created. This is corrected in Cell.addMine() however.
+                cellMatrix[y][x].increaseNonMines(); // This sets "Cell (class)" variable "nonMines" to the number of cells created. This is corrected in Cell.addMine().
                 output.println("y: " + y + " height: " + height + " x: " + x + " width: " + width);
             }
         }
@@ -383,6 +384,7 @@ class Cell extends JButton {
     public void addMine() {
         this.hasMine = true;
         nonMines--; // Without running this, "nonMines" will be set to the total number of cells. This corrects it.
+        setMineCounter(); // Sets the displayed number of (non) cells left to the actual number and not the total number of cells. This CAN'T be put under increaseNonMines()!
     } // end of method "addMine"
 
     public Boolean hasMineCheck() {
@@ -516,4 +518,12 @@ class Cell extends JButton {
     public void increaseNonMines() {
         nonMines++;
     } // end of method "increaseNonMines"
+
+    public void setMineCounter() { // Used for setting the displayed amount of non-mines at the beginning of the game.
+        scoreLabel.setText(""+nonMines);
+    } // end of method "setMineCounter"
+
+    public void resetNonMines() { // Resets variable "nonMines" to 0. Restarting without running this will result in an incorrect value.
+        nonMines = 0;
+    } // end of method "resetNonMines"
 } // end of class "Cell" 
