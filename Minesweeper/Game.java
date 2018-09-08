@@ -1,33 +1,35 @@
-import java.io.*;
-    import java.util.*;
-    import java.awt.Color;
-    import java.awt.Dimension;
-    import java.awt.FlowLayout;
-    import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GridLayout;
-import java.awt.Insets;
-    import java.awt.event.ActionEvent;
-    import java.awt.event.ActionListener;
-    import java.awt.event.MouseListener;
-    import java.awt.Event;
-    import java.awt.event.MouseEvent;
+/// Imported classes
+    import java.io.*;
+        import java.util.*;
+        import java.awt.Color;
+        import java.awt.Dimension;
+        import java.awt.FlowLayout;
+        import java.awt.Font;
+    import java.awt.FontFormatException;
+    import java.awt.GridLayout;
+    import java.awt.Insets;
+        import java.awt.event.ActionEvent;
+        import java.awt.event.ActionListener;
+        import java.awt.event.MouseListener;
+        import java.awt.Event;
+        import java.awt.event.MouseEvent;
 
-import java.util.EventObject;
+    import java.util.EventObject;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-    import javax.swing.JButton;
-    import javax.swing.JFrame;
-    import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JOptionPane.*;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-import org.w3c.dom.css.RGBColor;
+    import javax.swing.BorderFactory;
+    import javax.swing.ImageIcon;
+        import javax.swing.JButton;
+        import javax.swing.JFrame;
+        import javax.swing.JLabel;
+    import javax.swing.JOptionPane;
+    import javax.swing.JOptionPane.*;
+    import javax.swing.JPanel;
+    import javax.swing.JTextField;
+    import javax.swing.SwingConstants;
+    import javax.swing.Timer;
+    import javax.swing.UIManager;
+
+    import org.w3c.dom.css.RGBColor;
 
 public class Game {
 
@@ -35,16 +37,15 @@ public class Game {
     private Game game;
     private JFrame gameFrame;
     /// Variables for reciving input from constructor method
-    private int mines;
-    private int frameWidth;
-    private int frameHeight;
-
+        private int mines;
+        private int frameWidth;
+        private int frameHeight;
     /// Fonts
-    private Font pixelFont;
+        private Font pixelFont;
     /// Variables for class "Board"
-    private Board playground;
+        private Board playground;
     /// Variables for class "Header"
-    private Header topBar;
+        private Header topBar;
 
     public Game(String nameFromInput, int widthFromInput, int heightFromInput, int minesFromInput) {
         mines = minesFromInput;
@@ -93,30 +94,30 @@ public class Game {
 
 class Header extends JPanel {
 
-    private static final long serialVersionUID = 1L;
 	/// General varibles
-    private Dimension componentDimension;
-    private int barCoordinate;
+        private Dimension componentDimension;
+        private int barCoordinate;
     /// Visual components
-    private JLabel scoreLabel;
-    private JButton menuButton;
-    private JButton restartButton;
-    private JLabel timeLabel;
+        private JLabel scoreLabel;
+        private JButton menuButton;
+        private JButton restartButton;
+        private JLabel timeLabel;
     /// Other variables
-    static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-    static PrintStream output = System.out;
-    private MainMenu menu;
-    private JFrame frameHolder;
-    private Game gameHolder;
+        private static final long serialVersionUID = 1L;
+        static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        static PrintStream output = System.out;
+        private MainMenu menu;
+        private JFrame frameHolder;
+        private Game gameHolder;
     /// For clock
-    private Timer refreshTimer; // Used for refreshing the counter every 1 second
-    private int timeKeeper;
+        private Timer refreshTimer; // Used for refreshing the counter every 1 second
+        private int timeKeeper;
     /// Fonts
-    private Font pixelFont;
+        private Font pixelFont;
     /// Colors
-    private Color darkerGray = new Color(45, 45, 45);
-    private Color darkerWhite = new Color(240,240,240);
-    private Color regularGray = new Color(190, 190, 190);
+        private Color darkerGray = new Color(45, 45, 45);
+        private Color darkerWhite = new Color(240,240,240);
+        private Color regularGray = new Color(190, 190, 190);
 
     public Header(int widthOfFrame, JFrame mainFrame, int widthForNewGame, int heightForNewGame, int minesForNewGame) {
         frameHolder = mainFrame;
@@ -338,18 +339,18 @@ class Cell extends JButton {
     private int nearMines;
 
     /// Variables used for JOptionPane 
-    private JTextField nameField;
-    private int victoryPane;
-    private String username; // Stores whatever comes from variable "nameField"
-    private UIManager optionPaneManager;
-    private Object[] message; // Variable "nameField" is put in here further down.
-    private Color regularGray = new Color(190, 190, 190);
-    private ImageIcon largeBomb;
-    private int paneButton;
-    private JLabel timeField;
-    private JLabel openedCellsField;
-    private JLabel averageField;
-    private int duration;
+        private JTextField nameField;
+        private int victoryPane;
+        private String username; // Stores whatever comes from variable "nameField"
+        private UIManager optionPaneManager;
+        private Object[] message; // Variable "nameField" is put in here further down.
+        private Color regularGray = new Color(190, 190, 190);
+        private ImageIcon largeBomb;
+        private int paneButton;
+        private JLabel timeField;
+        private JLabel openedCellsField;
+        private JLabel averageField;
+        private int duration;
     ///
     public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel scoreLabelFromInput, JLabel timeLabelFromInput, Timer timerFromInput) {
         /// Frontend 
@@ -559,6 +560,8 @@ class Cell extends JButton {
     } // end of method "resetNonMines"
 
     public void toVictory() { // Method that is run after winning the game.
+
+        
         refreshTimer.stop();
         output.println("<==> Congratulations, you've won!");
         output.println("<==> It took: " + timeLabel.getText() + " seconds!");
@@ -589,6 +592,10 @@ class Cell extends JButton {
         if (victoryPane == JOptionPane.OK_OPTION) {
             username = nameField.getText();
             output.println("-- USERNAME: " + username);
+        } else if (victoryPane == JOptionPane.CLOSED_OPTION) {
+            while (victoryPane != JOptionPane.OK_OPTION) {
+                victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
+            }
         }
     }
 } // end of class "Cell" 
