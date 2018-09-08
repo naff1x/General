@@ -337,6 +337,20 @@ class Cell extends JButton {
     private int foundMines; // Used as the returned integer from method "checkNeighbors"
     private int nearMines;
 
+    /// Variables used for JOptionPane 
+    private JTextField nameField;
+    private int victoryPane;
+    private String username; // Stores whatever comes from variable "nameField"
+    private UIManager optionPaneManager;
+    private Object[] message; // Variable "nameField" is put in here further down.
+    private Color regularGray = new Color(190, 190, 190);
+    private ImageIcon largeBomb;
+    private int paneButton;
+    private JLabel timeField;
+    private JLabel openedCellsField;
+    private JLabel averageField;
+    private int duration;
+    ///
     public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel scoreLabelFromInput, JLabel timeLabelFromInput, Timer timerFromInput) {
         /// Frontend 
         setMinimumSize(new Dimension(20,20));;
@@ -549,5 +563,32 @@ class Cell extends JButton {
         output.println("<==> Congratulations, you've won!");
         output.println("<==> It took: " + timeLabel.getText() + " seconds!");
         output.println("<==> You cleared: " + cellsOpened + " squares!");
+
+        duration = Integer.parseInt(timeLabel.getText());
+
+        nameField = new JTextField();
+        timeField = new JLabel("Your time: " + timeLabel.getText() + "s");
+        openedCellsField = new JLabel("Cells opened: " + cellsOpened);
+        averageField = new JLabel("Average: " + cellsOpened/duration + " (cells/second)");
+
+        message = new Object[] {
+            "", timeField,
+            "", openedCellsField,
+            "", averageField,
+            "Enter username:", nameField
+        };
+
+        largeBomb = new ImageIcon("bombIcon.png");
+
+        optionPaneManager = new UIManager();
+        optionPaneManager.put("OptionPane.background", regularGray);
+        optionPaneManager.put("Panel.background", regularGray);
+
+        victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
+
+        if (victoryPane == JOptionPane.OK_OPTION) {
+            username = nameField.getText();
+            output.println("-- USERNAME: " + username);
+        }
     }
 } // end of class "Cell" 
