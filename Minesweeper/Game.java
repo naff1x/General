@@ -5,6 +5,10 @@
         import java.awt.Dimension;
         import java.awt.FlowLayout;
         import java.awt.Font;
+        import java.io.File;
+        import java.io.FileNotFoundException;
+        import java.io.IOException;
+        import java.io.PrintWriter;
     import java.awt.FontFormatException;
     import java.awt.GridLayout;
     import java.awt.Insets;
@@ -351,6 +355,10 @@ class Cell extends JButton {
         private JLabel openedCellsField;
         private JLabel averageField;
         private int duration;
+    /// Variables used for file I/O
+        static File scoreFile;
+        static PrintWriter fileO;
+        //static Scanner fileI = new Scanner(scoreFile);
     ///
     public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel scoreLabelFromInput, JLabel timeLabelFromInput, Timer timerFromInput) {
         /// Frontend 
@@ -591,11 +599,21 @@ class Cell extends JButton {
 
         if (victoryPane == JOptionPane.OK_OPTION) {
             username = nameField.getText();
-            output.println("-- USERNAME: " + username);
+            //output.println("-- USERNAME: " + username);
+            
+            try {
+                scoreFile = new File("scores.txt");
+                fileO = new PrintWriter(scoreFile);
+
+                fileO.println(username);
+                fileO.close();
+            } catch (IOException ioe) {
+                System.out.printf("ERROR: %s\n", ioe);
+            }
         } else if (victoryPane == JOptionPane.CLOSED_OPTION) {
             while (victoryPane != JOptionPane.OK_OPTION) {
                 victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
             }
         }
-    }
+    } // end of method "toVictory"
 } // end of class "Cell" 
