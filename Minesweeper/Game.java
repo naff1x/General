@@ -385,6 +385,12 @@ class Cell extends JButton {
                         setBorder(BorderFactory.createLineBorder(Color.gray, 1));
                         setIcon(new ImageIcon("MineIcon.png"));
                         output.println("You lose");
+                        refreshTimer.stop();
+                        for (int y = 1; y < theMatrix.length-1; y++) { // Reveals entire field   
+                            for (int x = 1; x < theMatrix[0].length-1; x++) {
+                                revealCell(y, x, theMatrix); 
+                            }
+                        }
                     } else {
                         theMatrix[yPos][xPos].nearMines = checkNeighbors(yPos, xPos, theMatrix);
                         openCell(yPos, xPos, theMatrix, theMatrix[yPos][xPos].nearMines);
@@ -420,6 +426,17 @@ class Cell extends JButton {
             }
         }
     } // end of method "openCell"
+
+    public void revealCell(int yPos, int xPos, Cell[][] theMatrix) { // Used when player has LOST the game. Not to be confused with method "openCell"!
+        if (theMatrix[yPos][xPos].hasMine) {
+            theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+            theMatrix[yPos][xPos].setIcon(new ImageIcon("MineIcon.png"));
+        } else {
+            theMatrix[yPos][xPos].setIcon(null);
+            theMatrix[yPos][xPos].isClosed = false;
+            theMatrix[yPos][xPos].setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        }
+    } // end of method "revealCell"
 
     public void addMine() {
         this.hasMine = true;
