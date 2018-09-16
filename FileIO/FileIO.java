@@ -25,8 +25,9 @@ public class FileIO {
 
             String name = fileI.nextLine();
             int age = fileI.nextInt();
-    
+            
             System.out.printf("Name: %s Age: %d\n", name, age);   
+            fileI.close();
         } catch (FileNotFoundException fnf) {
             System.out.printf("ERROR: %s\n", fnf);
         }

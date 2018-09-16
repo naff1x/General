@@ -9,7 +9,8 @@
         import java.io.FileNotFoundException;
         import java.io.IOException;
         import java.io.PrintWriter;
-    import java.awt.FontFormatException;
+import java.text.DecimalFormat;
+import java.awt.FontFormatException;
     import java.awt.GridLayout;
     import java.awt.Insets;
         import java.awt.event.ActionEvent;
@@ -353,8 +354,10 @@ class Cell extends JButton {
         private int paneButton;
         private JLabel timeField;
         private JLabel openedCellsField;
-        private JLabel averageField;
+        private JLabel scoreField;
         private int duration;
+        static int mines = 0;
+        private double difficulty;
     /// Variables used for file I/O
         static File scoreFile;
         static PrintWriter fileO;
@@ -371,6 +374,7 @@ class Cell extends JButton {
         timeLabel = timeLabelFromInput;
         refreshTimer = timerFromInput;
         cellsOpened = 0;
+        mines = 0;
 
         this.isOpenable = true;
         this.isClosed = true;
@@ -440,6 +444,7 @@ class Cell extends JButton {
 
     public void addMine() {
         this.hasMine = true;
+        mines++; // This lets the program count how many mines are added without having to pass a variable down from parent class.
         nonMines--; // Without running this, "nonMines" will be set to the total number of cells. This corrects it.
         setMineCounter(); // Sets the displayed number of (non) cells left to the actual number and not the total number of cells. This CAN'T be put under increaseNonMines()!
     } // end of method "addMine"
@@ -594,15 +599,26 @@ class Cell extends JButton {
 
         duration = Integer.parseInt(timeLabel.getText());
 
+        output.println("Mines: " + mines);
+
+        difficulty = (float)mines/(cellsOpened+mines) * 1000;
+        output.println(difficulty);
+        difficulty = Math.round(difficulty * 100) / 100;
+
+        //output.println("Maths: " + (mines/(cellsOpened+mines)));
+        output.println("CALC: " + difficulty + " Time: " + duration + " /// " + (cellsOpened+mines));
+
+
+
         nameField = new JTextField();
         timeField = new JLabel("Your time: " + timeLabel.getText() + "s");
         openedCellsField = new JLabel("Cells opened: " + cellsOpened);
-        averageField = new JLabel("Average: " + cellsOpened/duration + " (cells/second)");
+        scoreField = new JLabel("Difficulty: " + difficulty + "");
 
         message = new Object[] {
             "", timeField,
             "", openedCellsField,
-            "", averageField,
+            "", scoreField,
             "Enter username:", nameField
         };
 
@@ -621,8 +637,11 @@ class Cell extends JButton {
             try {
                 scoreFile = new File("scores.txt");
                 fileO = new PrintWriter(scoreFile);
+                
 
                 fileO.println(username);
+                fileO.println(difficulty);
+                fileO.println(duration);
                 fileO.close();
             } catch (IOException ioe) {
                 System.out.printf("ERROR: %s\n", ioe);
@@ -634,3 +653,9 @@ class Cell extends JButton {
         }
     } // end of method "toVictory"
 } // end of class "Cell" 
+
+class ScoreEntry {
+    public ScoreEntry(String username) {
+
+    } // end of constructor method "ScoreEntry"
+} // end of class "ScoreEntry"
