@@ -607,7 +607,7 @@ class Cell extends JButton {
         difficulty = (float)mines/(cellsOpened+mines) * 100;
         output.println(difficulty);
         difficulty = Math.round(difficulty * 100) / 100;
-        output.println("Maths: " + (mines/(cellsOpened+mines)));
+
         finalDifficulty = (int)difficulty;
         output.println("INTED: " + finalDifficulty);
         output.println("CALC: " + difficulty + " Time: " + duration + " /// " + (cellsOpened+mines));
@@ -642,7 +642,7 @@ class Cell extends JButton {
             scoreFile = new File("scores.txt"); // Created a file called "scores.txt"
             
             try {
-                fileO = new FileOutputStream(scoreFile); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
+                fileO = new FileOutputStream(scoreFile, true); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
                 objectOutStream = new ObjectOutputStream(fileO); // ObjectOutputStream serializes/deserializes the object. (Writes the object to the file in this case).
     
                 objectOutStream.writeObject(entryToScore);
@@ -664,6 +664,7 @@ class Cell extends JButton {
 
 class ScoreEntry implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String username;
     private int difficulty;
     private int time;
