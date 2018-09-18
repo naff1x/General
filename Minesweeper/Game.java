@@ -358,9 +358,12 @@ class Cell extends JButton {
         private int duration;
         static int mines = 0;
         private double difficulty;
+        private int finalDifficulty;
     /// Variables used for file I/O
+        private ScoreEntry entryToScore;
         static File scoreFile;
-        static PrintWriter fileO;
+        static FileOutputStream fileO;
+        static ObjectOutputStream objectOutStream;
         //static Scanner fileI = new Scanner(scoreFile);
     ///
     public Cell(int yPos, int xPos, Cell[][] theMatrix, JLabel scoreLabelFromInput, JLabel timeLabelFromInput, Timer timerFromInput) {
@@ -601,11 +604,12 @@ class Cell extends JButton {
 
         output.println("Mines: " + mines);
 
-        difficulty = (float)mines/(cellsOpened+mines) * 1000;
+        difficulty = (float)mines/(cellsOpened+mines) * 100;
         output.println(difficulty);
         difficulty = Math.round(difficulty * 100) / 100;
-
-        //output.println("Maths: " + (mines/(cellsOpened+mines)));
+        output.println("Maths: " + (mines/(cellsOpened+mines)));
+        finalDifficulty = (int)difficulty;
+        output.println("INTED: " + finalDifficulty);
         output.println("CALC: " + difficulty + " Time: " + duration + " /// " + (cellsOpened+mines));
 
 
@@ -613,7 +617,7 @@ class Cell extends JButton {
         nameField = new JTextField();
         timeField = new JLabel("Your time: " + timeLabel.getText() + "s");
         openedCellsField = new JLabel("Cells opened: " + cellsOpened);
-        scoreField = new JLabel("Difficulty: " + difficulty + "");
+        scoreField = new JLabel("Difficulty: " + finalDifficulty + "");
 
         message = new Object[] {
             "", timeField,
@@ -632,19 +636,23 @@ class Cell extends JButton {
 
         if (victoryPane == JOptionPane.OK_OPTION) {
             username = nameField.getText();
-            //output.println("-- USERNAME: " + username);
+
+            entryToScore = new ScoreEntry(username, finalDifficulty, duration); // Creates an instance of the class "ScoreEntry" which contains the given vars.
+            
+            scoreFile = new File("scores.txt"); // Created a file called "scores.txt"
             
             try {
-                scoreFile = new File("scores.txt");
-                fileO = new PrintWriter(scoreFile);
+                fileO = new FileOutputStream(scoreFile); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
+                objectOutStream = new ObjectOutputStream(fileO); // ObjectOutputStream serializes/deserializes the object. (Writes the object to the file in this case).
+    
+                objectOutStream.writeObject(entryToScore);
                 
-
-                fileO.println(username);
-                fileO.println(difficulty);
-                fileO.println(duration);
-                fileO.close();
+                objectOutStream.close();
+                fileO.close();   
+            } catch (FileNotFoundException fnfe) {
+                output.println("!! -A file is missing!");
             } catch (IOException ioe) {
-                System.out.printf("ERROR: %s\n", ioe);
+                output.println("!! - An IOException was generated!");
             }
         } else if (victoryPane == JOptionPane.CLOSED_OPTION) {
             while (victoryPane != JOptionPane.OK_OPTION) {
@@ -654,8 +662,15 @@ class Cell extends JButton {
     } // end of method "toVictory"
 } // end of class "Cell" 
 
-class ScoreEntry {
-    public ScoreEntry(String username) {
+class ScoreEntry implements Serializable {
 
+    private String username;
+    private int difficulty;
+    private int time;
+
+    public ScoreEntry(String usernameInput, int difficultyInput, int timeInput) {
+        this.username = usernameInput;
+        this.difficulty = difficultyInput;
+        this.time = timeInput;
     } // end of constructor method "ScoreEntry"
 } // end of class "ScoreEntry"
