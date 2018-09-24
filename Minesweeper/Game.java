@@ -639,7 +639,7 @@ class Cell extends JButton {
 
             entryToScore = new ScoreEntry(username, finalDifficulty, duration); // Creates an instance of the class "ScoreEntry" which contains the given vars.
             
-            scoreFile = new File("scores.txt"); // Created a file called "scores.txt"
+            scoreFile = new File("scores.ser"); // Created a file called "scores.txt"
             
             try {
                 fileO = new FileOutputStream(scoreFile, true); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
@@ -674,4 +674,16 @@ class ScoreEntry implements Serializable {
         this.difficulty = difficultyInput;
         this.time = timeInput;
     } // end of constructor method "ScoreEntry"
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public int getTime() {
+        return this.time;
+    }
+
+    public int getDifficulty() {
+        return this.difficulty;
+    }
 } // end of class "ScoreEntry"
