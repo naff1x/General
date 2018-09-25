@@ -668,6 +668,7 @@ class ScoreEntry implements Serializable {
     private String username;
     private int difficulty;
     private int time;
+    private int rank = 0;
 
     public ScoreEntry(String usernameInput, int difficultyInput, int timeInput) {
         this.username = usernameInput;
@@ -685,5 +686,17 @@ class ScoreEntry implements Serializable {
 
     public int getDifficulty() {
         return this.difficulty;
+    }
+
+    public void increaseRank() {
+        this.rank--;
+    }
+
+    public int getRank() {
+        return this.rank;
+    }
+
+    public void setRank(int spot) {
+        this.rank = spot;
     }
 } // end of class "ScoreEntry"

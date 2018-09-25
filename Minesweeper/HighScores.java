@@ -12,8 +12,6 @@ import java.awt.Insets;
     import java.awt.Event;
     import java.awt.event.MouseEvent;
 
-import java.util.EventObject;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
     import javax.swing.JButton;
@@ -43,8 +41,10 @@ public class HighScores extends JFrame {
         private int id;
         private ScoreEntry entry = null;
         private Boolean objectReturned;
-    ///
-
+    /// Other
+        private ArrayList<Integer> diffcultyArray;
+        private ArrayList<Integer> timeArray;
+        private ArrayList<ScoreEntry> top3Array;
     public HighScores(String name) {
         setTitle(name);
         setResizable(false);
@@ -57,6 +57,7 @@ public class HighScores extends JFrame {
 
         addFonts();
         readScoreFile();
+        rankScores();
     } // end of contructor method "game"
 
     public void addFonts() {
@@ -103,40 +104,73 @@ public class HighScores extends JFrame {
         } catch (ClassNotFoundException cnfe) {
             output.println("!! - A class is missing in 'HighScores.java'!");
         }
-        /*
-        for (ScoreEntry entry : scoreArray) {
-            output.println("Hello");
-        } 
-        */
+        
         for (int i=0; i<scoreArray.size(); i++) {
-            output.println(i);
+            output.println("Object ID: " +i);
             output.println("Entry: " + scoreArray.get(i) + " (username: " + scoreArray.get(i).getUsername() + ")" );
         }
+        
     } // end of method "readScoreFile"
+
+    public void rankScores() {
+    
+    /// Create arrays for sorting values of difficulty and time
+    diffcultyArray = new ArrayList<Integer>();
+    timeArray = new ArrayList<Integer>();
+
+    for (int i=0; i<scoreArray.size(); i++) { 
+        diffcultyArray.add(scoreArray.get(i).getDifficulty());
+        timeArray.add(scoreArray.get(i).getTime());
+    }
+
+    diffcultyArray.sort(Comparator.reverseOrder());
+    output.println("-- DIFFICULTY: " + diffcultyArray);
+
+    timeArray.sort(Comparator.naturalOrder());
+    output.println("-- TIME: " + timeArray);
+
+    /// Time to match the objects to and actually rank them
+    for (int i=0; i<scoreArray.size(); i++) {
+
+        for (int d=0; d<diffcultyArray.size(); d++) { // Go through and match difficulties
+
+            //for (int t=0; t<timeArray.size(); t++) { // Go through and match times
+
+                if (diffcultyArray.get(d) == scoreArray.get(i).getDifficulty()) {
+                    scoreArray.get(i).setRank(d);
+                }
+            //}
+        }
+    }
+
+    for (int i=0; i<scoreArray.size(); i++) {
+        output.println("-- RANKS: " + scoreArray.get(i).getRank());
+    }
+
+    top3Array = new ArrayList<ScoreEntry>();
+
+    for (int i=0; i<scoreArray.size(); i++) {
+        if (scoreArray.get(i).getRank() < 3) {
+            top3Array.add(scoreArray.get(i));
+            output.println("-- TOP 3 RANKS: " + scoreArray.get(i).getRank());
+        }
+    }
+    //output.println("-- TOP 3: " + top3Array);
+
+    
+
+    /*
+    for (int i=0; i<scoreArray.size()-1; i++) {
+            scoreArray.get(i).setRank(scoreArray.size());
+    
+            if (scoreArray.get(i).getDifficulty() > scoreArray.get(i+1).getDifficulty()) {
+                scoreArray.get(i).increaseRank(); // Actually decreases variable "rank" but since "rank" is set to the lowest effective rank, it works.
+                output.println("Rank reduced! " + scoreArray.get(i).getRank());
+            } else {
+                output.println("!");
+            }
+        }
+    output.println("-- 'RankScores' finished!");
+    */
+    } // end of method "rankScores"
 } // end of class "game"
-
-class ScoreEntry implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    private String username;
-    private int difficulty;
-    private int time;
-
-    public ScoreEntry(String usernameInput, int difficultyInput, int timeInput) {
-        this.username = usernameInput;
-        this.difficulty = difficultyInput;
-        this.time = timeInput;
-    } // end of constructor method "ScoreEntry"
-
-    public String getUsername() {
-        return this.username;
-    }
-
-    public int getTime() {
-        return this.time;
-    }
-
-    public int getDifficulty() {
-        return this.difficulty;
-    }
-} // end of class "ScoreEntry"
