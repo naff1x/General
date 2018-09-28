@@ -688,8 +688,12 @@ class ScoreEntry implements Serializable {
         return this.difficulty;
     }
 
-    public void increaseRank() {
-        this.rank--;
+    public void decreaseRankVar() {
+        this.rank -= 1;
+    }
+
+    public void increaseRankVar() {
+        this.rank += 1;
     }
 
     public int getRank() {
