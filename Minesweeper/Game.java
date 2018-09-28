@@ -613,50 +613,51 @@ class Cell extends JButton {
         output.println("CALC: " + difficulty + " Time: " + duration + " /// " + (cellsOpened+mines));
 
 
+        if (cellsOpened+mines >= 81) { // If the minimum requirement of 81+ squares is met...
+            nameField = new JTextField();
+            timeField = new JLabel("Your time: " + timeLabel.getText() + "s");
+            openedCellsField = new JLabel("Cells opened: " + cellsOpened);
+            scoreField = new JLabel("Difficulty: " + finalDifficulty + "");
 
-        nameField = new JTextField();
-        timeField = new JLabel("Your time: " + timeLabel.getText() + "s");
-        openedCellsField = new JLabel("Cells opened: " + cellsOpened);
-        scoreField = new JLabel("Difficulty: " + finalDifficulty + "");
+            message = new Object[] {
+                "", timeField,
+                "", openedCellsField,
+                "", scoreField,
+                "Enter username:", nameField
+            };
 
-        message = new Object[] {
-            "", timeField,
-            "", openedCellsField,
-            "", scoreField,
-            "Enter username:", nameField
-        };
+            largeBomb = new ImageIcon("bombIcon.png");
 
-        largeBomb = new ImageIcon("bombIcon.png");
+            optionPaneManager = new UIManager();
+            optionPaneManager.put("OptionPane.background", regularGray);
+            optionPaneManager.put("Panel.background", regularGray);
 
-        optionPaneManager = new UIManager();
-        optionPaneManager.put("OptionPane.background", regularGray);
-        optionPaneManager.put("Panel.background", regularGray);
+            victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
 
-        victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
+            if (victoryPane == JOptionPane.OK_OPTION) {
+                username = nameField.getText();
 
-        if (victoryPane == JOptionPane.OK_OPTION) {
-            username = nameField.getText();
-
-            entryToScore = new ScoreEntry(username, finalDifficulty, duration); // Creates an instance of the class "ScoreEntry" which contains the given vars.
-            
-            scoreFile = new File("scores.ser"); // Created a file called "scores.txt"
-            
-            try {
-                fileO = new FileOutputStream(scoreFile, true); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
-                objectOutStream = new ObjectOutputStream(fileO); // ObjectOutputStream serializes/deserializes the object. (Writes the object to the file in this case).
-    
-                objectOutStream.writeObject(entryToScore);
+                entryToScore = new ScoreEntry(username, finalDifficulty, duration); // Creates an instance of the class "ScoreEntry" which contains the given vars.
                 
-                objectOutStream.close();
-                fileO.close();   
-            } catch (FileNotFoundException fnfe) {
-                output.println("!! -A file is missing!");
-            } catch (IOException ioe) {
-                output.println("!! - An IOException was generated!");
-            }
-        } else if (victoryPane == JOptionPane.CLOSED_OPTION) {
-            while (victoryPane != JOptionPane.OK_OPTION) {
-                victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
+                scoreFile = new File("scores.ser"); // Created a file called "scores.txt"
+                
+                try {
+                    fileO = new FileOutputStream(scoreFile, true); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
+                    objectOutStream = new ObjectOutputStream(fileO); // ObjectOutputStream serializes/deserializes the object. (Writes the object to the file in this case).
+        
+                    objectOutStream.writeObject(entryToScore);
+                    
+                    objectOutStream.close();
+                    fileO.close();   
+                } catch (FileNotFoundException fnfe) {
+                    output.println("!! -A file is missing!");
+                } catch (IOException ioe) {
+                    output.println("!! - An IOException was generated!");
+                }
+            } else if (victoryPane == JOptionPane.CLOSED_OPTION) {
+                while (victoryPane != JOptionPane.OK_OPTION) {
+                    victoryPane = JOptionPane.showConfirmDialog(null, message, "Congratulations!", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, largeBomb);
+                }
             }
         }
     } // end of method "toVictory"

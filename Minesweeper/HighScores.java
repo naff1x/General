@@ -44,11 +44,28 @@ public class HighScores extends JFrame {
     /// Other
         private ArrayList<Integer> diffcultyArray;
         private ArrayList<Integer> timeArray;
+    /// Visuals
+        /// JLabels for names
+            private JLabel oneName;
+            private JLabel twoName;
+            private JLabel threeName;
+        
+        /// JLabels for difficulties
+            private JLabel oneDiff;
+            private JLabel twoDiff;
+            private JLabel threeDiff;
+
+        /// JLabels for times
+            private JLabel oneTime;
+            private JLabel twoTime;
+            private JLabel threeTime;
+    ///
     public HighScores(String name) {
         setTitle(name);
         setResizable(false);
         setLayout(null);
         setContentPane(new JLabel(new ImageIcon("HighScoresTemplate.png")));
+        //setContentPane(new JLabel(new ImageIcon("HighScoresTEMP.png"))); // Used for fixing with layout
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600,600);
         setLocationRelativeTo(null);
@@ -61,7 +78,7 @@ public class HighScores extends JFrame {
 
     public void addFonts() {
         try {
-            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.PLAIN, 20);   
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.BOLD, 25);   
         } catch (FileNotFoundException e) {
             e.addSuppressed(e);
         } catch (FontFormatException e) {
@@ -175,14 +192,86 @@ public class HighScores extends JFrame {
             switch (scoreArray.get(i).getRank()) {
                 case 0:
                 output.println(scoreArray.get(i).getUsername() + " had the best score with " + scoreArray.get(i).getDifficulty() + "% !");
+                addRank1(scoreArray.get(i));
                     break;
                 case 1:
                 output.println(scoreArray.get(i).getUsername() + " had the 2nd best score with " + scoreArray.get(i).getDifficulty() + "% !");
+                addRank2(scoreArray.get(i));
                     break;
                 case 2:
                 output.println(scoreArray.get(i).getUsername() + " had the 3rd best score with " + scoreArray.get(i).getDifficulty() + "% !");
+                addRank3(scoreArray.get(i));
                     break;
             }
         }
     } // end of method "rankScores"
+
+    public void addRank1(ScoreEntry number1) {
+
+        /// Name
+            oneName = new JLabel(number1.getUsername(), SwingConstants.CENTER);
+            oneName.setFont(pixelFont);
+            oneName.setBorder(BorderFactory.createLineBorder(Color.black));
+            oneName.setBounds(180, 270, 92, 24);
+            super.add(oneName);
+        /// Difficulty
+            oneDiff = new JLabel(number1.getDifficulty()+"%", SwingConstants.CENTER);
+            oneDiff.setFont(pixelFont);
+            oneDiff.setBorder(BorderFactory.createLineBorder(Color.black));
+            oneDiff.setBounds(320, 270, 92, 24);
+            super.add(oneDiff);
+        /// Time
+            oneTime = new JLabel(number1.getTime()+"s", SwingConstants.CENTER);
+            oneTime.setFont(pixelFont);
+            oneTime.setBorder(BorderFactory.createLineBorder(Color.black));
+            oneTime.setBounds(465, 272, 92, 24);
+            super.add(oneTime);
+
+    } // end of method "addRank1"
+
+    public void addRank2(ScoreEntry number2) {
+
+        /// Name
+            twoName = new JLabel(number2.getUsername(), SwingConstants.CENTER);
+            twoName.setFont(pixelFont);
+            twoName.setBorder(BorderFactory.createLineBorder(Color.black));
+            twoName.setBounds(180, 360, 92, 24);
+            super.add(twoName);
+        /// Difficulty
+            twoDiff = new JLabel(number2.getDifficulty()+"%", SwingConstants.CENTER);
+            twoDiff.setFont(pixelFont);
+            twoDiff.setBorder(BorderFactory.createLineBorder(Color.black));
+            twoDiff.setBounds(320, 360, 92, 24);
+            super.add(twoDiff);
+        /// Time
+            twoTime = new JLabel(number2.getTime()+"s", SwingConstants.CENTER);
+            twoTime.setFont(pixelFont);
+            twoTime.setBorder(BorderFactory.createLineBorder(Color.black));
+            twoTime.setBounds(465, 360, 92, 24);
+            super.add(twoTime);
+
+    } // end of method "addRank2"
+
+    public void addRank3(ScoreEntry number3) {
+
+       /// Name
+            threeName = new JLabel(number3.getUsername(), SwingConstants.CENTER);
+            threeName.setFont(pixelFont);
+            threeName.setBorder(BorderFactory.createLineBorder(Color.black));
+            threeName.setBounds(180, 450, 92, 24);
+            super.add(threeName);
+        /// Difficulty
+            threeDiff = new JLabel(number3.getDifficulty()+"%", SwingConstants.CENTER);
+            threeDiff.setFont(pixelFont);
+            threeDiff.setBorder(BorderFactory.createLineBorder(Color.black));
+            threeDiff.setBounds(320, 450, 92, 24);
+            super.add(threeDiff);
+        /// Time
+            threeTime = new JLabel(number3.getTime()+"s", SwingConstants.CENTER);
+            threeTime.setFont(pixelFont);
+            threeTime.setBorder(BorderFactory.createLineBorder(Color.black));
+            threeTime.setBounds(465, 450, 92, 24);
+            super.add(threeTime);
+
+    } // end of method "addRank3"
 } // end of class "game"

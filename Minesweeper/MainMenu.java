@@ -186,6 +186,9 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
                 bombsField = new JTextField();
 
                 Object[] message = {
+                    "Field size of 81+ required for",
+                    "registration of your scores!",
+                    "  ",
                     "Enter width of game:", widthField,
                     "Enter height of game:", heightField,
                     "Enter number of bombs:", bombsField,
