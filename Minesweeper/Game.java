@@ -623,7 +623,9 @@ class Cell extends JButton {
                 "", timeField,
                 "", openedCellsField,
                 "", scoreField,
-                "Enter username:", nameField
+                "Enter username:", 
+                "(6 characters max)",
+                nameField
             };
 
             largeBomb = new ImageIcon("bombIcon.png");

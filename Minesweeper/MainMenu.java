@@ -239,6 +239,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
             instructions = new Instructions("Instructions");
         } else if (e.getSource() == highScoresButton) {
             base.dispose();
+            super.dispose();
             highScores = new HighScores("High Scores");
         }
     } // end of method "actionPerformed"
