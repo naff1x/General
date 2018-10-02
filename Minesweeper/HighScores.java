@@ -33,6 +33,7 @@ public class HighScores extends JFrame {
 
     /// Fonts
         private Font pixelFont;
+        private Font smallerPF;
     /// File I/O
         private ArrayList<ScoreEntry> scoreArray;
         private File scoreFile;
@@ -44,6 +45,7 @@ public class HighScores extends JFrame {
     /// Other
         private ArrayList<Integer> diffcultyArray;
         private ArrayList<Integer> timeArray;
+        private MainMenu menu;
     /// Visuals
         /// JLabels for names
             private JLabel oneName;
@@ -59,6 +61,10 @@ public class HighScores extends JFrame {
             private JLabel oneTime;
             private JLabel twoTime;
             private JLabel threeTime;
+    
+        /// Other
+            private JLabel noScores; // Shown if there are no scores to show
+            private JButton menuButton;
     ///
     public HighScores(String name) {
         setTitle(name);
@@ -72,13 +78,26 @@ public class HighScores extends JFrame {
         setVisible(true);
 
         addFonts();
-        readScoreFile();
-        rankScores();
+        addMenuButton();
+
+        try {
+            scoreFile = new File("scores.ser");
+            readScoreFile();
+            rankScores();
+        } catch (NullPointerException npe) {
+            output.println("There any no scores to display!");
+            noScores = new JLabel("<html><body>There are no<br>scores to display!</body></html>", SwingConstants.CENTER);
+            noScores.setFont(smallerPF);
+            noScores.setBounds(200, 200, 200, 200);
+            add(noScores);
+        }
+        repaint();
     } // end of contructor method "game"
 
     public void addFonts() {
         try {
-            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.BOLD, 25);   
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.BOLD, 25);  
+            smallerPF = Font.createFont(Font.TRUETYPE_FONT, new FileInputStream(new File("VCR_OSD_MONO_1.001.ttf"))).deriveFont(Font.BOLD, 17);
         } catch (FileNotFoundException e) {
             e.addSuppressed(e);
         } catch (FontFormatException e) {
@@ -88,20 +107,39 @@ public class HighScores extends JFrame {
         }
     } // end of method "addFonts"
 
+    public void addMenuButton() {
+
+        output.println("Hello from 'addMenuButton'");
+        
+        menuButton = new JButton(new ImageIcon("ToMenu.png"));
+        menuButton.setContentAreaFilled(true);
+        menuButton.setBorderPainted(true);
+        menuButton.setFocusPainted(false);
+
+        menuButton.setBounds(265, 0, 70, 35);
+        menuButton.setOpaque(false);
+
+        menuButton.addActionListener(new ActionListener(){
+        
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                output.println("Menu button pressed!");
+                dispose();
+                menu = new MainMenu("Main Menu");
+            }
+        });
+        
+        add(menuButton);
+    } // end of method "addMenuButton"
+
     public void readScoreFile() {
         scoreFile = new File("scores.ser");
 
         try {
             fileIn = new FileInputStream(scoreFile);
-            //objectIn = new ObjectInputStream(fileIn);
             scoreArray = new ArrayList<ScoreEntry>();
             objectReturned = true;
-            /*
-            while (true) {
-                ScoreEntry entry = (ScoreEntry)objectIn.readObject();
-                scoreArray.add(entry);
-            }
-            */
+            
             while (objectReturned) {
                 objectIn = new ObjectInputStream(fileIn);
                 ScoreEntry entry = (ScoreEntry)objectIn.readObject();
@@ -146,60 +184,98 @@ public class HighScores extends JFrame {
         timeArray.sort(Comparator.naturalOrder());
         output.println("-- TIME: " + timeArray);
 
-        /// Loops and if-statements for ranking
+        for (int i=0; i<scoreArray.size(); i++) { // Go through every object (scoreEntry)
 
-            for (int i=0; i<scoreArray.size(); i++) { // Go through every object (score entry) [for every object..]
+            for (int d=0; d<diffcultyArray.size(); d++) { // Go through every difficulty added...
 
-                for (int d=0; d<diffcultyArray.size(); d++) { // [go through every difficulty added...]
+                if (scoreArray.get(i).getDifficulty() == diffcultyArray.get(d)) { // If the current (i) scoreEntry's difficulty equals the current (d) item in difficultyArray...
+                    scoreArray.get(i).setRank(d); // Set the current (i) scoreEntry's rank to ranking in "difficultyArray"
+                    output.println("s.A. item: " + i + " / RANK: " + d);
+                    diffcultyArray.set(d, -1); // This stops objects from being given the same rank
+                    //output.println(diffcultyArray);
+                    break;
+                }
+            }
+        }
 
-                    if (scoreArray.get(i).getDifficulty() == diffcultyArray.get(d)) { // If the current (i) scoreEntry's difficulty equals the current (d) item in difficultyArray...
+        for (int i=0; i<scoreArray.size(); i++) {
+            for (int b=0; b<scoreArray.size(); b++) {
+                if (i != b) {  
+                    if (scoreArray.get(i).getDifficulty() == scoreArray.get(b).getDifficulty()) { // 
 
-                        scoreArray.get(i).setRank(d); // Sets the current (i) scoreEntry's rank to ranking in "difficultyArray" (this will be adjusted later)
-                    
-                        if (i > 0) { // If this IS NOT the first item in "scoreArray", proceed. [one object has already been given a rank])
+                        output.println("Difficulties matched!");
+    
+                        if (scoreArray.get(i).getTime() < scoreArray.get(b).getTime() & scoreArray.get(i).getRank() > scoreArray.get(b).getRank()) { // If current s.A. item has a lower time
+                            output.println("Current s.A. item has lower time!");
+                            if (scoreArray.get(i).getRank() != 0) {
+                                
+                                int c = scoreArray.get(b).getRank();
+                                output.println(scoreArray.get(b).getUsername() + "'s rank before change: " + scoreArray.get(b).getRank());
+                                scoreArray.get(b).setRank(scoreArray.get(i).getRank());
+                                output.println(scoreArray.get(b).getUsername() + "'s rank after change: " + scoreArray.get(b).getRank());
+                                output.println(scoreArray.get(i).getUsername() + "'s rank before change: " + scoreArray.get(i).getRank());
+                                scoreArray.get(i).setRank(c);
+                                output.println(scoreArray.get(i).getUsername() + "'s rank after change: " + scoreArray.get(i).getRank());
+                                
+                                /*
+                                scoreArray.get(i).decreaseRankVar();
+                                output.println(scoreArray.get(i).getUsername() + "'s rank -1");
+                                scoreArray.get(b).increaseRankVar();
+                                output.println(scoreArray.get(b).getUsername() + "'s rank +1");
+                                */
+                            } else {
+                                scoreArray.get(b).increaseRankVar();
+                                output.println(scoreArray.get(b).getUsername() + "'s rank +1");
+                            }
+                        }  
                         
-                            //output.println("s.A. item:" + i + " difficulty: " + scoreArray.get(i).getDifficulty() + " and s.A. i-1: " + scoreArray.get(i-1).getDifficulty());
+                        if (scoreArray.get(i).getTime() == scoreArray.get(b).getTime()) { // If the two also have the same time
+                            output.println("Two s.A. items had the same time!");
+                        }
+                    } 
+                }
+            }
+        output.println("s.A. loop done! (" + i + ")");
+        }
 
-                            if (scoreArray.get(i).getDifficulty() == scoreArray.get(i-1).getDifficulty()) { // 
-        
-                                output.println("Difficulties matched!");
-
-                                if (scoreArray.get(i).getTime() < scoreArray.get(i-1).getTime()) { // If current s.A. item has a lower time
-                                    output.println("Current s.A. item has lower time!");
-                                    scoreArray.get(i).decreaseRankVar();
-                                }
-
-                                if (scoreArray.get(i).getTime() > scoreArray.get(i-1).getTime()) { // If current s.A. item has a higher time
-                                    output.println("Current s.A. item has higher time!");
-                                    scoreArray.get(i).increaseRankVar();
-                                }
-                            } 
+        for (int a=0; a<scoreArray.size(); a++) {
+            for (int b=0; b<scoreArray.size(); b++) {
+                if (a != b) {
+                    if (scoreArray.get(a).getRank() == scoreArray.get(b).getRank()) {
+                        if (scoreArray.get(a).getDifficulty() > scoreArray.get(b).getDifficulty()) {
+                            scoreArray.get(b).increaseRankVar();
+                        } else if (scoreArray.get(a).getDifficulty() == scoreArray.get(b).getDifficulty()) {
+                            if (scoreArray.get(a).getTime() < scoreArray.get(b).getTime() | scoreArray.get(a).getTime() == scoreArray.get(b).getTime()) {
+                                scoreArray.get(b).increaseRankVar();
+                            } else {
+                                scoreArray.get(a).increaseRankVar();
+                            }
                         }
                     }
                 }
-
-                output.println("s.A. loop done! (" + i + ")");
             }
+        }
 
         for (int i=0; i<scoreArray.size(); i++) {
-        output.println("-- ENTRY (" + i + ") RANK: "+scoreArray.get(i).getRank());
-        output.println("-- ENTRY (" + i + ") DIFFICULTY: " + scoreArray.get(i).getDifficulty());
-        output.println("-- ENTRY (" + i + ") TIME: " + scoreArray.get(i).getTime());
+            output.println("-- ENTRY (" + i + ") NAME: "+scoreArray.get(i).getUsername());
+            output.println("-- ENTRY (" + i + ") RANK: "+scoreArray.get(i).getRank());
+            output.println("-- ENTRY (" + i + ") DIFFICULTY: " + scoreArray.get(i).getDifficulty());
+            output.println("-- ENTRY (" + i + ") TIME: " + scoreArray.get(i).getTime());
         }
 
         for (int i=0; i<scoreArray.size(); i++) { // This loop finds the top 3 scores and prints out info.
             
             switch (scoreArray.get(i).getRank()) {
                 case 0:
-                output.println(scoreArray.get(i).getUsername() + " had the best score with " + scoreArray.get(i).getDifficulty() + "% !");
+                output.println(scoreArray.get(i).getUsername() + " had the best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
                 addRank1(scoreArray.get(i));
                     break;
                 case 1:
-                output.println(scoreArray.get(i).getUsername() + " had the 2nd best score with " + scoreArray.get(i).getDifficulty() + "% !");
+                output.println(scoreArray.get(i).getUsername() + " had the 2nd best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
                 addRank2(scoreArray.get(i));
                     break;
                 case 2:
-                output.println(scoreArray.get(i).getUsername() + " had the 3rd best score with " + scoreArray.get(i).getDifficulty() + "% !");
+                output.println(scoreArray.get(i).getUsername() + " had the 3rd best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
                 addRank3(scoreArray.get(i));
                     break;
             }
@@ -211,20 +287,20 @@ public class HighScores extends JFrame {
         /// Name
             oneName = new JLabel(number1.getUsername(), SwingConstants.CENTER);
             oneName.setFont(pixelFont);
-            oneName.setBorder(BorderFactory.createLineBorder(Color.black));
-            oneName.setBounds(180, 270, 92, 24);
+            //oneName.setBorder(BorderFactory.createLineBorder(Color.black));
+            oneName.setBounds(180, 270, 105, 24);
             super.add(oneName);
         /// Difficulty
             oneDiff = new JLabel(number1.getDifficulty()+"%", SwingConstants.CENTER);
             oneDiff.setFont(pixelFont);
-            oneDiff.setBorder(BorderFactory.createLineBorder(Color.black));
-            oneDiff.setBounds(320, 270, 92, 24);
+            //oneDiff.setBorder(BorderFactory.createLineBorder(Color.black));
+            oneDiff.setBounds(320, 270, 105, 24);
             super.add(oneDiff);
         /// Time
             oneTime = new JLabel(number1.getTime()+"s", SwingConstants.CENTER);
             oneTime.setFont(pixelFont);
-            oneTime.setBorder(BorderFactory.createLineBorder(Color.black));
-            oneTime.setBounds(465, 272, 92, 24);
+            //oneTime.setBorder(BorderFactory.createLineBorder(Color.black));
+            oneTime.setBounds(465, 272, 105, 24);
             super.add(oneTime);
 
     } // end of method "addRank1"
@@ -234,20 +310,20 @@ public class HighScores extends JFrame {
         /// Name
             twoName = new JLabel(number2.getUsername(), SwingConstants.CENTER);
             twoName.setFont(pixelFont);
-            twoName.setBorder(BorderFactory.createLineBorder(Color.black));
-            twoName.setBounds(180, 360, 92, 24);
+            //twoName.setBorder(BorderFactory.createLineBorder(Color.black));
+            twoName.setBounds(180, 360, 105, 24);
             super.add(twoName);
         /// Difficulty
             twoDiff = new JLabel(number2.getDifficulty()+"%", SwingConstants.CENTER);
             twoDiff.setFont(pixelFont);
-            twoDiff.setBorder(BorderFactory.createLineBorder(Color.black));
-            twoDiff.setBounds(320, 360, 92, 24);
+            //twoDiff.setBorder(BorderFactory.createLineBorder(Color.black));
+            twoDiff.setBounds(320, 360, 105, 24);
             super.add(twoDiff);
         /// Time
             twoTime = new JLabel(number2.getTime()+"s", SwingConstants.CENTER);
             twoTime.setFont(pixelFont);
-            twoTime.setBorder(BorderFactory.createLineBorder(Color.black));
-            twoTime.setBounds(465, 360, 92, 24);
+            //twoTime.setBorder(BorderFactory.createLineBorder(Color.black));
+            twoTime.setBounds(465, 360, 105, 24);
             super.add(twoTime);
 
     } // end of method "addRank2"
@@ -257,20 +333,20 @@ public class HighScores extends JFrame {
        /// Name
             threeName = new JLabel(number3.getUsername(), SwingConstants.CENTER);
             threeName.setFont(pixelFont);
-            threeName.setBorder(BorderFactory.createLineBorder(Color.black));
-            threeName.setBounds(180, 450, 92, 24);
+            //threeName.setBorder(BorderFactory.createLineBorder(Color.black));
+            threeName.setBounds(180, 450, 105, 24);
             super.add(threeName);
         /// Difficulty
             threeDiff = new JLabel(number3.getDifficulty()+"%", SwingConstants.CENTER);
             threeDiff.setFont(pixelFont);
-            threeDiff.setBorder(BorderFactory.createLineBorder(Color.black));
-            threeDiff.setBounds(320, 450, 92, 24);
+            //threeDiff.setBorder(BorderFactory.createLineBorder(Color.black));
+            threeDiff.setBounds(320, 450, 105, 24);
             super.add(threeDiff);
         /// Time
             threeTime = new JLabel(number3.getTime()+"s", SwingConstants.CENTER);
             threeTime.setFont(pixelFont);
-            threeTime.setBorder(BorderFactory.createLineBorder(Color.black));
-            threeTime.setBounds(465, 450, 92, 24);
+            //threeTime.setBorder(BorderFactory.createLineBorder(Color.black));
+            threeTime.setBounds(465, 450, 105, 24);
             super.add(threeTime);
 
     } // end of method "addRank3"
