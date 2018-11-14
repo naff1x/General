@@ -36,9 +36,9 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
     /// Remote variables for other classes
-    static Game game;                       // TODO: I suspect these variables should be made private. 
-    static Instructions instructions;       // I think they will create problems when trying to go back and forth between e.g. the game and main menu.
-    static HighScores highScores;
+    private Game game;                       // TODO: I suspect these variables should be made private. 
+    private Instructions instructions;       
+    private HighScores highScores;
     //private Font hoverFont = new Font("Sans-Serif", Font.PLAIN, 22);
     /// Colors
     private Color darkerGray = new Color(45, 45, 45);
@@ -61,23 +61,14 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
     private JTextField widthField;
     private JTextField heightField;
     private JTextField bombsField;
+    private Object[] message;
     /// Fonts
     private Font pixelFont;
     private Font fallbackFont = new Font("Sans-Serif", Font.PLAIN, 19);
     /// Images
     private ImageIcon bombIcon;
-    
     public static void main(String[] args) {
         base = new MainMenu("Main Menu");
-        base.addFonts();
-        base.addGameButton();
-        //base.addInstructions();
-        base.addHighScores();
-        base.setLocationRelativeTo(null);
-        base.repaint();
-
-        threshold += 1;
-        output.println("Threshold at: " + threshold);
     } // end of method "main"
 
     public MainMenu(String name) { // creates frame for Home Screen
@@ -90,14 +81,12 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        if (threshold > 0) {
-            addFonts();
-            addGameButton();
-            //addInstructions();
-            addHighScores();
-            setLocationRelativeTo(null);
-            repaint();
-        }
+        addFonts();
+        addGameButton();
+        //addInstructions(); // Inactivated until "Instructions.java" is finished
+        addHighScores();
+        setLocationRelativeTo(null);
+        repaint();
     } // end of constructor method "Sweeper"
 
     public void addGameButton() {
@@ -143,7 +132,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
 
     } // end of method "addHighScores"
 
-    @Override
+    //@Override
     public void mouseEntered(MouseEvent e) {
         if (e.getSource() == newGameButton) {
             newGameButton.setBackground(darkerWhite);
@@ -156,7 +145,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
             highScoresButton.setForeground(darkerGray);
         }
     }  
-    @Override
+    //@Override
     public void mouseExited(MouseEvent e) {  
         if (e.getSource() == newGameButton) {
             newGameButton.setBackground(darkerGray);
@@ -170,14 +159,14 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         }
     }  
     
-    @Override
+    //@Override
     public void mouseReleased(MouseEvent e) {}
-    @Override
+    //@Override
     public void mousePressed(MouseEvent e) {}
-    @Override
+    //@Override
     public void mouseClicked(MouseEvent e) {}
 
-    @Override
+    //@Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == newGameButton) {
             try {
@@ -185,52 +174,14 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
                 heightField = new JTextField();
                 bombsField = new JTextField();
 
-                Object[] message = {
-                    "Field size of 81+ required for",
-                    "registration of your scores!",
-                    "  ",
-                    "Enter width of game:", widthField,
-                    "Enter height of game:", heightField,
-                    "Enter number of bombs:", bombsField,
-                };
-
                 optionPaneManager = new UIManager();
                 optionPaneManager.put("OptionPane.background", regularGray);
                 optionPaneManager.put("Panel.background", regularGray);
 
                 bombIcon = new ImageIcon("bombIcon.png");
 
-                gameVariables = JOptionPane.showConfirmDialog(null, message, "Enter values", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, bombIcon);
+                createOptionPane();
 
-                if (gameVariables == JOptionPane.OK_OPTION) {
-                    width = widthField.getText();
-                    widthInt = Integer.parseInt(width);
-                    height = heightField.getText();
-                    heightInt = Integer.parseInt(height);
-                    bombs = bombsField.getText();
-                    bombsInt = Integer.parseInt(bombs);
-                    
-                    if (bombsInt > 0 && heightInt > 0 && widthInt > 0) {
-                        //base.dispose();
-                        dispose();
-                        game = new Game("Minesweeper", widthInt, heightInt, bombsInt); 
-                    }
-                    if (bombsInt <= 0 || heightInt <= 0 || widthInt <= 0) {
-                        JOptionPane.showMessageDialog(null, "Please enter a value higher than 0 for all fields!", "What are you doing?", JOptionPane.PLAIN_MESSAGE);
-                    } 
-                    /* // This part doesn't seem to add anything
-                    if (bombs.equals(null) || height.equals(null) || width.equals(null)) {
-                        JOptionPane.showMessageDialog(null, "Please enter a value for all fields!", "You missed something...", JOptionPane.PLAIN_MESSAGE);
-                    }
-                    */
-                } 
-                if (gameVariables == JOptionPane.CANCEL_OPTION) {
-                } 
-                if (gameVariables == JOptionPane.NO_OPTION) {
-                    JOptionPane.showMessageDialog(null, "Please enter a value for all fields!", "You missed something...", JOptionPane.PLAIN_MESSAGE);
-                } 
-                if (gameVariables == JOptionPane.CLOSED_OPTION) {
-                }
             } catch (Exception ex) {}
         }
         
@@ -243,6 +194,44 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
             highScores = new HighScores("High Scores");
         }
     } // end of method "actionPerformed"
+
+    public void createOptionPane() {
+
+        Object[] message = {
+            "Field size of 81+ required for",
+            "registration of your scores!",
+            "  ",
+            "Enter width of game:", widthField,
+            "Enter height of game:", heightField,
+            "Enter number of bombs:", bombsField,
+        };
+
+        gameVariables = JOptionPane.showConfirmDialog(null, message, "Enter values", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, bombIcon);
+
+        if (gameVariables == JOptionPane.OK_OPTION) {
+            width = widthField.getText();
+            widthInt = Integer.parseInt(width);
+            height = heightField.getText();
+            heightInt = Integer.parseInt(height);
+            bombs = bombsField.getText();
+            bombsInt = Integer.parseInt(bombs);
+            
+            if (bombsInt > 0 && heightInt > 0 && widthInt > 0) {
+                dispose();
+                game = new Game("Minesweeper", widthInt, heightInt, bombsInt); 
+            }
+            if (bombsInt <= 0 || heightInt <= 0 || widthInt <= 0) {
+                JOptionPane.showMessageDialog(null, "Please enter a value higher than 0 for all fields!", "What are you doing?", JOptionPane.PLAIN_MESSAGE);
+            } 
+        } 
+        if (gameVariables == JOptionPane.CANCEL_OPTION) {
+        } 
+        if (gameVariables == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(null, "Please enter a value for all fields!", "You missed something...", JOptionPane.PLAIN_MESSAGE);
+        } 
+        if (gameVariables == JOptionPane.CLOSED_OPTION) {
+        }
+    } // end of method "createOptionPane"
 
     public void addFonts() {
         try {

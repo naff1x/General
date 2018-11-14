@@ -1,28 +1,27 @@
 import java.io.*;
-    import java.util.*;
-    import java.awt.Color;
+import java.util.*;
+    import java.util.Comparator;
+import java.awt.Color;
     import java.awt.Dimension;
     import java.awt.FlowLayout;
     import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.Insets;
+    import java.awt.FontFormatException;
+    import java.awt.Insets;
     import java.awt.event.ActionEvent;
     import java.awt.event.ActionListener;
     import java.awt.event.MouseListener;
     import java.awt.Event;
     import java.awt.event.MouseEvent;
-
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+    import javax.swing.ImageIcon;
     import javax.swing.JButton;
     import javax.swing.JFrame;
     import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JOptionPane.*;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import java.util.Comparator;
+    import javax.swing.JOptionPane;
+    import javax.swing.JOptionPane.*;
+    import javax.swing.JPanel;
+    import javax.swing.JTextField;
+    import javax.swing.SwingConstants;
 
 import org.w3c.dom.css.RGBColor;
 
