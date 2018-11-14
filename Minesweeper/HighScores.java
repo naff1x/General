@@ -22,6 +22,7 @@ import javax.swing.JOptionPane.*;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.util.Comparator;
 
 import org.w3c.dom.css.RGBColor;
 
@@ -167,119 +168,150 @@ public class HighScores extends JFrame {
     } // end of method "readScoreFile"
 
     public void rankScores() {
-    
-        /// Create arrays for sorting values of difficulty and time
-        diffcultyArray = new ArrayList<Integer>();
-        timeArray = new ArrayList<Integer>();
+        /// Old ranking algorithm
+            /*
+            /// Create arrays for sorting values of difficulty and time
+            diffcultyArray = new ArrayList<Integer>();
+            timeArray = new ArrayList<Integer>();
 
-        for (int i=0; i<scoreArray.size(); i++) { 
-            diffcultyArray.add(scoreArray.get(i).getDifficulty());
-            timeArray.add(scoreArray.get(i).getTime());
-        }
+            for (int i=0; i<scoreArray.size(); i++) { 
+                diffcultyArray.add(scoreArray.get(i).getDifficulty());
+                timeArray.add(scoreArray.get(i).getTime());
+            }
 
-        diffcultyArray.sort(Comparator.reverseOrder());
-        //Collections.sort(diffcultyArray);
-        output.println("-- DIFFICULTY: " + diffcultyArray);
+            diffcultyArray.sort(Comparator.reverseOrder());
+            //Collections.sort(diffcultyArray);
+            output.println("-- DIFFICULTY: " + diffcultyArray);
 
-        timeArray.sort(Comparator.naturalOrder());
-        output.println("-- TIME: " + timeArray);
+            timeArray.sort(Comparator.naturalOrder());
+            output.println("-- TIME: " + timeArray);
 
-        for (int i=0; i<scoreArray.size(); i++) { // Go through every object (scoreEntry)
+            for (int i=0; i<scoreArray.size(); i++) { // Go through every object (scoreEntry)
 
-            for (int d=0; d<diffcultyArray.size(); d++) { // Go through every difficulty added...
+                for (int d=0; d<diffcultyArray.size(); d++) { // Go through every difficulty added...
 
-                if (scoreArray.get(i).getDifficulty() == diffcultyArray.get(d)) { // If the current (i) scoreEntry's difficulty equals the current (d) item in difficultyArray...
-                    scoreArray.get(i).setRank(d); // Set the current (i) scoreEntry's rank to ranking in "difficultyArray"
-                    output.println("s.A. item: " + i + " / RANK: " + d);
-                    diffcultyArray.set(d, -1); // This stops objects from being given the same rank
-                    //output.println(diffcultyArray);
-                    break;
+                    if (scoreArray.get(i).getDifficulty() == diffcultyArray.get(d)) { // If the current (i) scoreEntry's difficulty equals the current (d) item in difficultyArray...
+                        scoreArray.get(i).setRank(d); // Set the current (i) scoreEntry's rank to ranking in "difficultyArray"
+                        output.println("s.A. item: " + i + " / RANK: " + d);
+                        diffcultyArray.set(d, -1); // This stops objects from being given the same rank
+                        //output.println(diffcultyArray);
+                        break;
+                    }
                 }
             }
-        }
 
-        for (int i=0; i<scoreArray.size(); i++) {
-            for (int b=0; b<scoreArray.size(); b++) {
-                if (i != b) {  
-                    if (scoreArray.get(i).getDifficulty() == scoreArray.get(b).getDifficulty()) { // 
+            for (int i=0; i<scoreArray.size(); i++) {
+                for (int b=0; b<scoreArray.size(); b++) {
+                    if (i != b) {  
+                        if (scoreArray.get(i).getDifficulty() == scoreArray.get(b).getDifficulty()) { // 
 
-                        output.println("Difficulties matched!");
-    
-                        if (scoreArray.get(i).getTime() < scoreArray.get(b).getTime() & scoreArray.get(i).getRank() > scoreArray.get(b).getRank()) { // If current s.A. item has a lower time
-                            output.println("Current s.A. item has lower time!");
-                            if (scoreArray.get(i).getRank() != 0) {
-                                
-                                int c = scoreArray.get(b).getRank();
-                                output.println(scoreArray.get(b).getUsername() + "'s rank before change: " + scoreArray.get(b).getRank());
-                                scoreArray.get(b).setRank(scoreArray.get(i).getRank());
-                                output.println(scoreArray.get(b).getUsername() + "'s rank after change: " + scoreArray.get(b).getRank());
-                                output.println(scoreArray.get(i).getUsername() + "'s rank before change: " + scoreArray.get(i).getRank());
-                                scoreArray.get(i).setRank(c);
-                                output.println(scoreArray.get(i).getUsername() + "'s rank after change: " + scoreArray.get(i).getRank());
-                                
-                                /*
-                                scoreArray.get(i).decreaseRankVar();
-                                output.println(scoreArray.get(i).getUsername() + "'s rank -1");
-                                scoreArray.get(b).increaseRankVar();
-                                output.println(scoreArray.get(b).getUsername() + "'s rank +1");
-                                */
-                            } else {
-                                scoreArray.get(b).increaseRankVar();
-                                output.println(scoreArray.get(b).getUsername() + "'s rank +1");
+                            output.println("Difficulties matched!");
+        
+                            if (scoreArray.get(i).getTime() < scoreArray.get(b).getTime() & scoreArray.get(i).getRank() > scoreArray.get(b).getRank()) { // If current s.A. item has a lower time
+                                output.println("Current s.A. item has lower time!");
+                                if (scoreArray.get(i).getRank() != 0) {
+                                    
+                                    int c = scoreArray.get(b).getRank();
+                                    output.println(scoreArray.get(b).getUsername() + "'s rank before change: " + scoreArray.get(b).getRank());
+                                    scoreArray.get(b).setRank(scoreArray.get(i).getRank());
+                                    output.println(scoreArray.get(b).getUsername() + "'s rank after change: " + scoreArray.get(b).getRank());
+                                    output.println(scoreArray.get(i).getUsername() + "'s rank before change: " + scoreArray.get(i).getRank());
+                                    scoreArray.get(i).setRank(c);
+                                    output.println(scoreArray.get(i).getUsername() + "'s rank after change: " + scoreArray.get(i).getRank());
+                                    
+                                } else {
+                                    scoreArray.get(b).increaseRankVar();
+                                    output.println(scoreArray.get(b).getUsername() + "'s rank +1");
+                                }
+                            }  
+                            
+                            if (scoreArray.get(i).getTime() == scoreArray.get(b).getTime()) { // If the two also have the same time
+                                output.println("Two s.A. items had the same time!");
                             }
-                        }  
-                        
-                        if (scoreArray.get(i).getTime() == scoreArray.get(b).getTime()) { // If the two also have the same time
-                            output.println("Two s.A. items had the same time!");
-                        }
-                    } 
+                        } 
+                    }
                 }
+            output.println("s.A. loop done! (" + i + ")");
             }
-        output.println("s.A. loop done! (" + i + ")");
-        }
 
-        for (int a=0; a<scoreArray.size(); a++) {
-            for (int b=0; b<scoreArray.size(); b++) {
-                if (a != b) {
-                    if (scoreArray.get(a).getRank() == scoreArray.get(b).getRank()) {
-                        if (scoreArray.get(a).getDifficulty() > scoreArray.get(b).getDifficulty()) {
-                            scoreArray.get(b).increaseRankVar();
-                        } else if (scoreArray.get(a).getDifficulty() == scoreArray.get(b).getDifficulty()) {
-                            if (scoreArray.get(a).getTime() < scoreArray.get(b).getTime() | scoreArray.get(a).getTime() == scoreArray.get(b).getTime()) {
+            for (int a=0; a<scoreArray.size(); a++) {
+                for (int b=0; b<scoreArray.size(); b++) {
+                    if (a != b) {
+                        if (scoreArray.get(a).getRank() == scoreArray.get(b).getRank()) {
+                            if (scoreArray.get(a).getDifficulty() > scoreArray.get(b).getDifficulty()) {
                                 scoreArray.get(b).increaseRankVar();
-                            } else {
-                                scoreArray.get(a).increaseRankVar();
+                            } else if (scoreArray.get(a).getDifficulty() == scoreArray.get(b).getDifficulty()) {
+                                if (scoreArray.get(a).getTime() < scoreArray.get(b).getTime() | scoreArray.get(a).getTime() == scoreArray.get(b).getTime()) {
+                                    scoreArray.get(b).increaseRankVar();
+                                } else {
+                                    scoreArray.get(a).increaseRankVar();
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        for (int i=0; i<scoreArray.size(); i++) {
-            output.println("-- ENTRY (" + i + ") NAME: "+scoreArray.get(i).getUsername());
-            output.println("-- ENTRY (" + i + ") RANK: "+scoreArray.get(i).getRank());
-            output.println("-- ENTRY (" + i + ") DIFFICULTY: " + scoreArray.get(i).getDifficulty());
-            output.println("-- ENTRY (" + i + ") TIME: " + scoreArray.get(i).getTime());
-        }
-
-        for (int i=0; i<scoreArray.size(); i++) { // This loop finds the top 3 scores and prints out info.
-            
-            switch (scoreArray.get(i).getRank()) {
-                case 0:
-                output.println(scoreArray.get(i).getUsername() + " had the best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
-                addRank1(scoreArray.get(i));
-                    break;
-                case 1:
-                output.println(scoreArray.get(i).getUsername() + " had the 2nd best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
-                addRank2(scoreArray.get(i));
-                    break;
-                case 2:
-                output.println(scoreArray.get(i).getUsername() + " had the 3rd best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
-                addRank3(scoreArray.get(i));
-                    break;
+            for (int i=0; i<scoreArray.size(); i++) {
+                output.println("-- ENTRY (" + i + ") NAME: "+scoreArray.get(i).getUsername());
+                output.println("-- ENTRY (" + i + ") RANK: "+scoreArray.get(i).getRank());
+                output.println("-- ENTRY (" + i + ") DIFFICULTY: " + scoreArray.get(i).getDifficulty());
+                output.println("-- ENTRY (" + i + ") TIME: " + scoreArray.get(i).getTime());
             }
-        }
+
+            for (int i=0; i<scoreArray.size(); i++) { // This loop finds the top 3 scores and prints out info.
+                
+                switch (scoreArray.get(i).getRank()) {
+                    case 0:
+                    output.println(scoreArray.get(i).getUsername() + " had the best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
+                    addRank1(scoreArray.get(i));
+                        break;
+                    case 1:
+                    output.println(scoreArray.get(i).getUsername() + " had the 2nd best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
+                    addRank2(scoreArray.get(i));
+                        break;
+                    case 2:
+                    output.println(scoreArray.get(i).getUsername() + " had the 3rd best score with " + scoreArray.get(i).getDifficulty() + "% and " + scoreArray.get(i).getTime() + "s !");
+                    addRank3(scoreArray.get(i));
+                        break;
+                }
+            }
+            */
+        /// New ranking algorithm
+            output.println("--- Before sorting! ---");
+            for (int i=0; i<scoreArray.size(); i++) {
+                output.println("-- ENTRY (" + i + ") NAME: "+scoreArray.get(i).getUsername());
+                //output.println("-- ENTRY (" + i + ") RANK: "+scoreArray.get(i).getRank());
+                output.println("-- ENTRY (" + i + ") DIFFICULTY: " + scoreArray.get(i).getDifficulty());
+                output.println("-- ENTRY (" + i + ") TIME: " + scoreArray.get(i).getTime());
+            }
+            scoreArray.sort(new Comparator<ScoreEntry>(){
+                public int compare(ScoreEntry a, ScoreEntry b) {
+                    int compared = Integer.toString(a.getDifficulty()).compareTo(Integer.toString(b.getDifficulty()));
+                    output.println("COMPARED = " + compared);
+                    if (compared == -1) {
+                        return compared+2;
+                    }
+                    if (compared == 1) {
+                        return compared-2;
+                    }
+                    if (compared == 0) {
+                        compared = Integer.toString(a.getTime()).compareTo(Integer.toString(b.getTime()));
+                    }
+                    return compared;
+                }
+            });
+            output.println("--- After sorting ---");
+            for (int i=0; i<scoreArray.size(); i++) {
+                output.println("-- ENTRY (" + i + ") NAME: "+scoreArray.get(i).getUsername());
+                //output.println("-- ENTRY (" + i + ") RANK: "+scoreArray.get(i).getRank());
+                output.println("-- ENTRY (" + i + ") DIFFICULTY: " + scoreArray.get(i).getDifficulty());
+                output.println("-- ENTRY (" + i + ") TIME: " + scoreArray.get(i).getTime());
+            }
+
+            addRank1(scoreArray.get(0));
+            addRank2(scoreArray.get(1));
+            addRank3(scoreArray.get(2));
     } // end of method "rankScores"
 
     public void addRank1(ScoreEntry number1) {
