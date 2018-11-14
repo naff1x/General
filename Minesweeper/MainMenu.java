@@ -31,7 +31,7 @@ import org.w3c.dom.css.RGBColor;
 
 public class MainMenu extends JFrame implements ActionListener, MouseListener {
     /// Master variables
-    static MainMenu base; // let's program know about game's existence 
+    static MainMenu base;
     private static final long serialVersionUID = 1L;
     static BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream output = System.out;
@@ -71,7 +71,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         base = new MainMenu("Main Menu");
         base.addFonts();
         base.addGameButton();
-        base.addInstructions();
+        //base.addInstructions();
         base.addHighScores();
         base.setLocationRelativeTo(null);
         base.repaint();
@@ -93,7 +93,7 @@ public class MainMenu extends JFrame implements ActionListener, MouseListener {
         if (threshold > 0) {
             addFonts();
             addGameButton();
-            addInstructions();
+            //addInstructions();
             addHighScores();
             setLocationRelativeTo(null);
             repaint();
