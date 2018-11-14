@@ -289,11 +289,10 @@ public class HighScores extends JFrame {
                 public int compare(ScoreEntry a, ScoreEntry b) {
                     int compared = Integer.toString(a.getDifficulty()).compareTo(Integer.toString(b.getDifficulty()));
                     output.println("COMPARED = " + compared);
-                    if (compared == -1) {
-                        return compared+2;
-                    }
-                    if (compared == 1) {
-                        return compared-2;
+                    if (compared < 0) {
+                        return 1;
+                    } else if (compared > 0) {
+                        return -1;
                     }
                     if (compared == 0) {
                         compared = Integer.toString(a.getTime()).compareTo(Integer.toString(b.getTime()));
