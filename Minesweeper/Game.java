@@ -517,58 +517,75 @@ class Cell extends JButton {
     } // end of method "checkNeighbors"
 
     public void sweeperLoop(int yPos, int xPos, Cell[][] theMatrix) {
-
-        /// Upper row (3)
-        if (theMatrix[yPos-1][xPos-1].isClosed & !theMatrix[yPos-1][xPos-1].hasMine & theMatrix[yPos-1][xPos-1].isOpenable) {
-            sweeperHelper(yPos-1, xPos-1, theMatrix);
-            if (theMatrix[yPos-1][xPos-1].nearMines == 0) {
-                sweeperLoop(yPos-1, xPos-1, theMatrix);
+        /// Old loop
+            /*
+            /// Upper row (3)
+            if (theMatrix[yPos-1][xPos-1].isClosed & !theMatrix[yPos-1][xPos-1].hasMine & theMatrix[yPos-1][xPos-1].isOpenable) {
+                sweeperHelper(yPos-1, xPos-1, theMatrix);
+                if (theMatrix[yPos-1][xPos-1].nearMines == 0) {
+                    sweeperLoop(yPos-1, xPos-1, theMatrix);
+                }
             }
-        }
-        if (theMatrix[yPos-1][xPos].isClosed & !theMatrix[yPos-1][xPos].hasMine & theMatrix[yPos-1][xPos].isOpenable) {
-            sweeperHelper(yPos-1, xPos, theMatrix);
-            if (theMatrix[yPos-1][xPos].nearMines == 0) {
-                sweeperLoop(yPos-1, xPos, theMatrix);
+            if (theMatrix[yPos-1][xPos].isClosed & !theMatrix[yPos-1][xPos].hasMine & theMatrix[yPos-1][xPos].isOpenable) {
+                sweeperHelper(yPos-1, xPos, theMatrix);
+                if (theMatrix[yPos-1][xPos].nearMines == 0) {
+                    sweeperLoop(yPos-1, xPos, theMatrix);
+                }
             }
-        }
-        if (theMatrix[yPos-1][xPos+1].isClosed & !theMatrix[yPos-1][xPos+1].hasMine & theMatrix[yPos-1][xPos+1].isOpenable) {
-            sweeperHelper(yPos-1, xPos+1, theMatrix);
-            if (theMatrix[yPos-1][xPos+1].nearMines == 0) {
-                sweeperLoop(yPos-1, xPos+1, theMatrix);
+            if (theMatrix[yPos-1][xPos+1].isClosed & !theMatrix[yPos-1][xPos+1].hasMine & theMatrix[yPos-1][xPos+1].isOpenable) {
+                sweeperHelper(yPos-1, xPos+1, theMatrix);
+                if (theMatrix[yPos-1][xPos+1].nearMines == 0) {
+                    sweeperLoop(yPos-1, xPos+1, theMatrix);
+                }
             }
-        }
-        /// Middle row (2)
-        if (theMatrix[yPos][xPos-1].isClosed & !theMatrix[yPos][xPos-1].hasMine & theMatrix[yPos][xPos-1].isOpenable) {
-            sweeperHelper(yPos, xPos-1, theMatrix);
-            if (theMatrix[yPos][xPos-1].nearMines == 0) {
-                sweeperLoop(yPos, xPos-1, theMatrix);
+            /// Middle row (2)
+            if (theMatrix[yPos][xPos-1].isClosed & !theMatrix[yPos][xPos-1].hasMine & theMatrix[yPos][xPos-1].isOpenable) {
+                sweeperHelper(yPos, xPos-1, theMatrix);
+                if (theMatrix[yPos][xPos-1].nearMines == 0) {
+                    sweeperLoop(yPos, xPos-1, theMatrix);
+                }
             }
-        }
-        if (theMatrix[yPos][xPos+1].isClosed & !theMatrix[yPos][xPos+1].hasMine & theMatrix[yPos][xPos+1].isOpenable) {
-            sweeperHelper(yPos, xPos+1, theMatrix);
-            if (theMatrix[yPos][xPos+1].nearMines == 0) {
-                sweeperLoop(yPos, xPos+1, theMatrix);
+            if (theMatrix[yPos][xPos+1].isClosed & !theMatrix[yPos][xPos+1].hasMine & theMatrix[yPos][xPos+1].isOpenable) {
+                sweeperHelper(yPos, xPos+1, theMatrix);
+                if (theMatrix[yPos][xPos+1].nearMines == 0) {
+                    sweeperLoop(yPos, xPos+1, theMatrix);
+                }
             }
-        }
-        /// Lower row (3)
-        if (theMatrix[yPos+1][xPos-1].isClosed & !theMatrix[yPos+1][xPos-1].hasMine & theMatrix[yPos+1][xPos-1].isOpenable) {
-            sweeperHelper(yPos+1, xPos-1, theMatrix);
-            if (theMatrix[yPos+1][xPos-1].nearMines == 0) {
-                sweeperLoop(yPos+1, xPos-1, theMatrix);
+            /// Lower row (3)
+            if (theMatrix[yPos+1][xPos-1].isClosed & !theMatrix[yPos+1][xPos-1].hasMine & theMatrix[yPos+1][xPos-1].isOpenable) {
+                sweeperHelper(yPos+1, xPos-1, theMatrix);
+                if (theMatrix[yPos+1][xPos-1].nearMines == 0) {
+                    sweeperLoop(yPos+1, xPos-1, theMatrix);
+                }
             }
-        }
-        if (theMatrix[yPos+1][xPos].isClosed & !theMatrix[yPos+1][xPos].hasMine & theMatrix[yPos+1][xPos].isOpenable) {
-            sweeperHelper(yPos+1, xPos, theMatrix);
-            if (theMatrix[yPos+1][xPos].nearMines == 0) {
-                sweeperLoop(yPos+1, xPos, theMatrix);
+            if (theMatrix[yPos+1][xPos].isClosed & !theMatrix[yPos+1][xPos].hasMine & theMatrix[yPos+1][xPos].isOpenable) {
+                sweeperHelper(yPos+1, xPos, theMatrix);
+                if (theMatrix[yPos+1][xPos].nearMines == 0) {
+                    sweeperLoop(yPos+1, xPos, theMatrix);
+                }
             }
-        }
-        if (theMatrix[yPos+1][xPos+1].isClosed & !theMatrix[yPos+1][xPos+1].hasMine & theMatrix[yPos+1][xPos+1].isOpenable) {
-            sweeperHelper(yPos+1, xPos+1, theMatrix);
-            if (theMatrix[yPos+1][xPos+1].nearMines == 0) {
-                sweeperLoop(yPos+1, xPos+1, theMatrix);
+            if (theMatrix[yPos+1][xPos+1].isClosed & !theMatrix[yPos+1][xPos+1].hasMine & theMatrix[yPos+1][xPos+1].isOpenable) {
+                sweeperHelper(yPos+1, xPos+1, theMatrix);
+                if (theMatrix[yPos+1][xPos+1].nearMines == 0) {
+                    sweeperLoop(yPos+1, xPos+1, theMatrix);
+                }
             }
-        }
+            */
+        /// New loop
+            for (int x=-1; x<2; x++) {
+                for (int y=-1; y<2; y++) {
+                    if ((x==0) & (y==0)) {
+                        //skip 
+                    } else {
+                        if (theMatrix[yPos+y][xPos+x].isClosed & !theMatrix[yPos+y][xPos+x].hasMine & theMatrix[yPos+y][xPos+x].isOpenable) {
+                            sweeperHelper(yPos+y, xPos+x, theMatrix);
+                            if (theMatrix[yPos+y][xPos+x].nearMines == 0) {
+                                sweeperLoop(yPos+y, xPos+x, theMatrix);
+                            }
+                        }
+                    }
+                }
+            }
     } // end of method "sweeperLoop"
 
     public void sweeperHelper(int yPos, int xPos, Cell[][] theMatrix) { // Used for the method "sweeperLoop" in order to reduce clutter.
@@ -641,7 +658,7 @@ class Cell extends JButton {
 
                 entryToScore = new ScoreEntry(username, finalDifficulty, duration); // Creates an instance of the class "ScoreEntry" which contains the given vars.
                 
-                scoreFile = new File("scores.ser"); // Created a file called "scores.txt"
+                scoreFile = new File("scores.ser"); // Creates a file called "scores.txt" if no such file already exists
                 
                 try {
                     fileO = new FileOutputStream(scoreFile, true); // The FileOutoutStream is used to read/write to a file ("scoreFile" in this case) in bytes.
