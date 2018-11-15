@@ -465,51 +465,67 @@ class Cell extends JButton {
         foundMines = 0;
 
         if (theMatrix[yPos][xPos].isOpenable) {
-            /// Upper row
+            /// Old code
+                /*
+                /// Upper row
 
-            if (theMatrix[yPos-1][xPos-1].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos-1][xPos-1].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            if (theMatrix[yPos-1][xPos].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos-1][xPos].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            if (theMatrix[yPos-1][xPos+1].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos-1][xPos+1].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            /// Middle row
+                /// Middle row
 
-            if (theMatrix[yPos][xPos-1].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos][xPos-1].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            if (theMatrix[yPos][xPos+1].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos][xPos+1].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            /// Lower row 
-            
-            if (theMatrix[yPos+1][xPos-1].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                /// Lower row 
+                
+                if (theMatrix[yPos+1][xPos-1].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            if (theMatrix[yPos+1][xPos].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos+1][xPos].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
 
-            if (theMatrix[yPos+1][xPos+1].hasMine) {
-                foundMines++;
-                output.println("There is a mine nearby!");
-            }
+                if (theMatrix[yPos+1][xPos+1].hasMine) {
+                    foundMines++;
+                    output.println("There is a mine nearby!");
+                }
+                */
+            /// New code
+                for (int x=-1; x<2; x++) {
+                    for (int y=-1; y<2; y++) {
+                        if ((x==0) & (y==0)) {
+                            //skip 
+                        } else {
+                            if (theMatrix[yPos+y][xPos+x].hasMine) {
+                                foundMines++;
+                                output.println("There is a mine nearby!");
+                            }
+                        }
+                    }
+                }
         } else { // This else-part combined with the PrintStream stops the program from generating an "ArrayIndexOutOfBoundsException".
             output.println("<<< At method 'checkNeighbors', the main if-statement was bypassed and 'else' was used. >>>");
         }
@@ -610,8 +626,6 @@ class Cell extends JButton {
     } // end of method "resetNonMines"
 
     public void toVictory() { // Method that is run after winning the game.
-
-        
         refreshTimer.stop();
         output.println("<==> Congratulations, you've won!");
         output.println("<==> It took: " + timeLabel.getText() + " seconds!");
@@ -699,27 +713,21 @@ class ScoreEntry implements Serializable {
     public String getUsername() {
         return this.username;
     }
-
     public int getTime() {
         return this.time;
     }
-
     public int getDifficulty() {
         return this.difficulty;
     }
-
     public void decreaseRankVar() {
         this.rank -= 1;
     }
-
     public void increaseRankVar() {
         this.rank += 1;
     }
-
     public int getRank() {
         return this.rank;
     }
-
     public void setRank(int spot) {
         this.rank = spot;
     }
